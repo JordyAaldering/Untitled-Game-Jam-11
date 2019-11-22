@@ -3,11 +3,18 @@ using UnityEngine;
 
 public class MeshData
 {
+    private readonly string name;
+    
     public readonly List<Vector3> vertices = new List<Vector3>();
     public readonly List<int> triangles = new List<int>();
     public readonly List<Vector3> normals = new List<Vector3>();
     public readonly List<Vector2> uvs = new List<Vector2>();
 
+    public MeshData(string name)
+    {
+        this.name = name;
+    }
+    
     public void Clear()
     {
         vertices.Clear();
@@ -31,7 +38,7 @@ public class MeshData
     {
         Mesh mesh = new Mesh
         {
-            name = "Custom Mesh",
+            name = name,
             vertices = vertices.ToArray(),
             triangles = triangles.ToArray(),
             uv = uvs.ToArray()
