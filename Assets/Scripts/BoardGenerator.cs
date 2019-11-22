@@ -5,14 +5,60 @@ using UnityEngine;
 [RequireComponent(typeof(MeshFilter))]
 public class BoardGenerator : MonoBehaviour
 {
-    [SerializeField] private float boardWidth = 6f;
-    [SerializeField] private float boardHeight = 4f;
+    [SerializeField] private float _boardWidth = 6f;
+    private float boardWidth
+    {
+        get => _boardWidth;
+        set
+        {
+            cutSettings.width = value;
+            _boardWidth = value;
+        }
+    }
+    
+    [SerializeField] private float _boardHeight = 4f;
+    private float boardHeight
+    {
+        get => _boardHeight;
+        set
+        {
+            cutSettings.height = value;
+            _boardHeight = value;
+        }
+    }
+    
     [SerializeField] private float boardDepth = 1f;
 
-    [SerializeField] private int horizontalCutAmount = 0;
-    [SerializeField] private int verticalCutAmount = 0;
+    [SerializeField] private int _horizontalCutAmount = 0;
+    private int horizontalCutAmount
+    {
+        get => _horizontalCutAmount;
+        set
+        {
+            gridSettings.width = value + 1;
+            horizontalCuts = new float[value];
+            _horizontalCutAmount = value;
+        }
+    }
+    
+    [SerializeField] private int _verticalCutAmount = 0;
+    private int verticalCutAmount
+    {
+        get => _verticalCutAmount;
+        set
+        {
+            gridSettings.height = value + 1;
+            verticalCuts = new float[value];
+            _verticalCutAmount = value;
+        }
+    }
 
+    [SerializeField] private CutSettings cutSettings;
     [SerializeField] private GridSettings gridSettings;
+    
+    private int[,] grid = new int[0, 0];
+    private float[] horizontalCuts = new float[0];
+    private float[] verticalCuts = new float[0];
     
     private readonly MeshData boardMesh = new MeshData("Board Mesh");
     private MeshFilter _boardMeshFilter;
@@ -36,17 +82,21 @@ public class BoardGenerator : MonoBehaviour
 
     private void CreatePlane()
     {
-        // Create arrays with cut positions.
-        float[] horizontalCuts = new float[horizontalCutAmount];
-        float[] verticalCuts = new float[verticalCutAmount];
-        CutGenerator.Cut(ref horizontalCuts, ref verticalCuts, boardWidth, boardHeight);
-
-        // Create array with components to cut.
-        gridSettings.width = horizontalCutAmount + 1;
-        gridSettings.height = verticalCutAmount + 1;
-        int[,] grid = GridGenerator.PopulateGrid(gridSettings);
+        Clear();
         
-        // Clear old components.
+        CutGenerator.Cut(ref horizontalCuts, ref verticalCuts, cutSettings);
+        grid = GridGenerator.PopulateGrid(gridSettings);
+
+        CreateMeshes();
+        BuildMeshes();
+    }
+
+    private void Clear()
+    {
+        // Clear old board mesh.
+        boardMesh.Clear();
+        
+        // Remove old components.
         for (int i = 0; i < componentObjects.Length; i++)
         {
             if (componentObjects[i] == null)
@@ -55,12 +105,14 @@ public class BoardGenerator : MonoBehaviour
             DestroyImmediate(componentObjects[i]);
             componentObjects[i] = null;
         }
-
-        // Create board mesh.
-        boardMesh.Clear();
+        
+        // Clear old components.
         componentMeshes = new MeshData[gridSettings.maxComponents];
         componentObjects = new GameObject[gridSettings.maxComponents];
-        
+    }
+
+    private void CreateMeshes()
+    {
         for (int x = 0; x < horizontalCutAmount + 1; x++)
         for (int y = 0; y < verticalCutAmount + 1; y++)
         {
@@ -68,30 +120,44 @@ public class BoardGenerator : MonoBehaviour
             
             if (i == 0)
             {
+                // Add vertices.
                 boardMesh.vertices.Add(GetVertexPosition(x, y, horizontalCuts, verticalCuts));
                 boardMesh.vertices.Add(GetVertexPosition(x, y + 1, horizontalCuts, verticalCuts));
                 boardMesh.vertices.Add(GetVertexPosition(x + 1, y, horizontalCuts, verticalCuts));
                 boardMesh.vertices.Add(GetVertexPosition(x + 1, y + 1, horizontalCuts, verticalCuts));
 
+                // Add triangles.
                 int vertexCount = boardMesh.vertices.Count;
                 boardMesh.AddQuad(vertexCount - 4, vertexCount - 3, vertexCount - 2, vertexCount - 1);
             }
             else
             {
-                if (componentMeshes[i - 1] == null)
-                    componentMeshes[i - 1] = new MeshData("Component Mesh " + i);
+                // Subtract 1 to get component index.
+                i--;
                 
-                componentMeshes[i - 1].vertices.Add(GetVertexPosition(x, y, horizontalCuts, verticalCuts));
-                componentMeshes[i - 1].vertices.Add(GetVertexPosition(x, y + 1, horizontalCuts, verticalCuts));
-                componentMeshes[i - 1].vertices.Add(GetVertexPosition(x + 1, y, horizontalCuts, verticalCuts));
-                componentMeshes[i - 1].vertices.Add(GetVertexPosition(x + 1, y + 1, horizontalCuts, verticalCuts));
+                // Create a new mesh if there is none.
+                if (componentMeshes[i] == null)
+                    componentMeshes[i] = new MeshData("Component Mesh " + i);
+                
+                // Add vertices.
+                componentMeshes[i].vertices.Add(GetVertexPosition(x, y, horizontalCuts, verticalCuts));
+                componentMeshes[i].vertices.Add(GetVertexPosition(x, y + 1, horizontalCuts, verticalCuts));
+                componentMeshes[i].vertices.Add(GetVertexPosition(x + 1, y, horizontalCuts, verticalCuts));
+                componentMeshes[i].vertices.Add(GetVertexPosition(x + 1, y + 1, horizontalCuts, verticalCuts));
 
-                int vertexCount = componentMeshes[i - 1].vertices.Count;
-                componentMeshes[i - 1].AddQuad(vertexCount - 4, vertexCount - 3, vertexCount - 2, vertexCount - 1);
+                // Add triangles.
+                int vertexCount = componentMeshes[i].vertices.Count;
+                componentMeshes[i].AddQuad(vertexCount - 4, vertexCount - 3, vertexCount - 2, vertexCount - 1);
             }
         }
-        
+    }
+
+    private void BuildMeshes()
+    {
+        // Build board mesh.
         BoardBoardMeshFilter.sharedMesh = boardMesh.CreateMesh();
+        
+        // Build component meshes.
         for (int i = 0; i < gridSettings.maxComponents; i++)
         {
             if (componentMeshes[i] == null)
@@ -116,11 +182,17 @@ public class BoardGenerator : MonoBehaviour
     
     private void OnValidate()
     {
-        boardWidth = Mathf.Max(0.01f, boardWidth);
-        boardHeight = Mathf.Max(0.01f, boardHeight);
+        _boardWidth = Mathf.Max(0.01f, boardWidth);
+        _boardHeight = Mathf.Max(0.01f, boardHeight);
         boardDepth = Mathf.Max(0.01f, boardDepth);
+
+        boardWidth = _boardWidth;
+        boardHeight = _boardHeight;
         
-        horizontalCutAmount = Mathf.Max(0, horizontalCutAmount);
-        verticalCutAmount = Mathf.Max(0, verticalCutAmount);
+        _horizontalCutAmount = Mathf.Max(0, horizontalCutAmount);
+        _verticalCutAmount = Mathf.Max(0, verticalCutAmount);
+
+        horizontalCutAmount = _horizontalCutAmount;
+        verticalCutAmount = _verticalCutAmount;
     }
 }

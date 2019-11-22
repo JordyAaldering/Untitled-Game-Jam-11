@@ -27,7 +27,7 @@ namespace DefaultNamespace
                     else x += dirX;
                     
                     tries++;
-                    if (tries > settings.nextStartMaxTries)
+                    if (tries > settings.maxFindTries)
                         return grid;
                 }
             }
@@ -35,26 +35,34 @@ namespace DefaultNamespace
             return grid;
         }
 
-        private static void CreateComponent(ref int[,] grid, ref int x, ref int y, int index, GridSettings settings)
+        private static void CreateComponent(ref int[,] grid, ref int x, ref int y, int i, GridSettings settings)
         {
-            int steps = 0;
+            int steps = 0, tries = 0;
             while (steps < settings.maxSteps)
             {
                 if (steps > settings.maxSteps && Random.Range(0f, 1f) < settings.stepStopChance)
                     return;
-                
-                grid[x, y] = index;
-                
+
+                if (grid[x, y] == 0)
+                {
+                    grid[x, y] = i;
+                    steps++;
+                }
+                else
+                {
+                    tries++;
+                    if (tries > settings.maxFindTries)
+                        return;
+                }
+
                 int dirX = Random.Range(x > settings.MinX ? -1 : 0, x < settings.MaxX ? 2 : 1);
                 if (dirX == 0) y += Random.Range(y > settings.MinY ? -1 : 0, y < settings.MaxY ? 2 : 1);
                 else x += dirX;
-
-                steps++;
             }
         }
     }
 
-    [CreateAssetMenu(menuName="Grid Settings", fileName="New Grid Settings")]
+    [CreateAssetMenu(menuName="Game Settings/Grid Settings", fileName="New Grid Settings")]
     public class GridSettings : ScriptableObject
     {
         [HideInInspector] public int width = 0;
@@ -70,7 +78,7 @@ namespace DefaultNamespace
         public int maxComponents = 2;
         [Range(0f, 1f)] public float componentStopChance = 0.5f;
 
-        public int nextStartMaxTries = 10;
+        public int maxFindTries = 10;
         
         public int MinX => deadZoneSize;
         public int MaxX => width - deadZoneSize - 1;
@@ -87,7 +95,7 @@ namespace DefaultNamespace
             maxComponents = Mathf.Max(1, maxComponents);
             minComponents = Mathf.Clamp(minComponents, 1, maxComponents);
 
-            nextStartMaxTries = Mathf.Max(1, nextStartMaxTries);
+            maxFindTries = Mathf.Max(1, maxFindTries);
         }
     }
 }
