@@ -2,15 +2,15 @@ using UnityEngine;
 
 namespace DefaultNamespace
 {
-    public static class ShapeGenerator
+    public static class CutGenerator
     {
-        public static void Cut(ref float[] horizontal, ref float[] vertical, int width, int height)
+        public static void Cut(ref float[] horizontal, ref float[] vertical, float boardWidth, float boardHeight)
         {
-            horizontal = CutHorizontal(horizontal, width);
-            vertical = CutVertical(vertical, height);
+            horizontal = CutHorizontal(horizontal, boardWidth);
+            vertical = CutVertical(vertical, boardHeight);
         }
 
-        private static float[] CutHorizontal(float[] horizontal, int width)
+        private static float[] CutHorizontal(float[] horizontal, float boardWidth)
         {
             int amount = horizontal.Length;
             if (amount == 0)
@@ -19,13 +19,13 @@ namespace DefaultNamespace
             float[] cuts = GetFractions(amount);
             for (int i = 0; i < amount; i++)
             {
-                cuts[i] *= width;
+                cuts[i] *= boardWidth;
             }
 
             return cuts;
         }
 
-        private static float[] CutVertical(float[] vertical, int height)
+        private static float[] CutVertical(float[] vertical, float boardHeight)
         {
             int amount = vertical.Length;
             if (amount == 0)
@@ -34,7 +34,7 @@ namespace DefaultNamespace
             float[] cuts = GetFractions(amount);
             for (int i = 0; i < amount; i++)
             {
-                cuts[i] *= height;
+                cuts[i] *= boardHeight;
             }
 
             return cuts;
@@ -42,13 +42,13 @@ namespace DefaultNamespace
 
         private static float[] GetFractions(int amount)
         {
-            float avg = 1 / (amount + 1);
+            float avg = (float) 1 / (amount + 1);
             float avgHalf = avg * 0.5f;
             
             float[] fractions = new float[amount];
             for (int i = 0; i < amount; i++)
             {
-                float frac = (i + 1) / (amount + 1);
+                float frac = (float) (i + 1) / (amount + 1);
                 frac += Random.Range(-avgHalf, avgHalf);
                 fractions[i] = frac;
             }
