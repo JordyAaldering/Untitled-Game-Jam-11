@@ -10,8 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: Default Cut Settings
-  m_EditorClassIdentifier: Assembly-CSharp:DefaultNamespace:CutSettings
-  width: 9
-  height: 6
-  maxCutOffset: 0.25
+  m_Name: Grid Settings
+  m_EditorClassIdentifier: Assembly-CSharp:DefaultNamespace:GridSettings
+  width: 10
+  height: 7
+  deadZoneSize: 1
+  minSteps: 1
+  maxSteps: 3
+  stepStopChance: 0.2
+  minComponents: 1
+  maxComponents: 3
+  componentStopChance: 0.2
+  maxFindTries: 100
