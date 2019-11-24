@@ -23,7 +23,7 @@ public class MeshData
         uvs.Clear();
     }
     
-    public void AddQuad(int v00, int v01, int v10, int v11)
+    public void AddQuadTriangles(int v00, int v01, int v10, int v11)
     {
         triangles.Add(v00);
         triangles.Add(v01);

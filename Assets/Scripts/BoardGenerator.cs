@@ -121,10 +121,18 @@ public class BoardGenerator : MonoBehaviour
             mesh.vertices.Add(GetVertexPosition(x + 1, y + 1, horizontalCuts, verticalCuts));
             
             int vertexCount = mesh.vertices.Count;
-            mesh.AddQuad(vertexCount - 4, vertexCount - 3, vertexCount - 2, vertexCount - 1);
+            mesh.AddQuadTriangles(vertexCount - 4, vertexCount - 3, vertexCount - 2, vertexCount - 1);
         }
     }
 
+    private Vector3 GetVertexPosition(int x, int y, float[] horizontalCuts, float[] verticalCuts)
+    {
+        return new Vector3(
+            x == 0 ? 0f : x <= horizontalCutAmount ? horizontalCuts[x - 1] : boardWidth,
+            y == 0 ? 0f : y <= verticalCutAmount ? verticalCuts[y - 1] : boardHeight
+        );
+    }
+    
     private void BuildMeshes()
     {
         boardMeshFilter.sharedMesh = boardMesh.CreateMesh();
@@ -139,21 +147,13 @@ public class BoardGenerator : MonoBehaviour
         }
     }
 
-    private Vector3 GetVertexPosition(int x, int y, float[] horizontalCuts, float[] verticalCuts)
-    {
-        return new Vector3(
-            x == 0 ? 0f : x <= horizontalCutAmount ? horizontalCuts[x - 1] : boardWidth,
-            y == 0 ? 0f : y <= verticalCutAmount ? verticalCuts[y - 1] : boardHeight
-        );
-    }
-    
     private void OnValidate()
     {
-        boardWidth = _boardWidth = Mathf.Max(0.01f, boardWidth);
-        boardHeight = _boardHeight = Mathf.Max(0.01f, boardHeight);
+        boardWidth = _boardWidth = Mathf.Max(0.01f, _boardWidth);
+        boardHeight = _boardHeight = Mathf.Max(0.01f, _boardHeight);
         boardDepth = Mathf.Max(0.01f, boardDepth);
         
-        horizontalCutAmount = _horizontalCutAmount = Mathf.Max(0, horizontalCutAmount);
-        verticalCutAmount = _verticalCutAmount = Mathf.Max(0, verticalCutAmount);
+        horizontalCutAmount = _horizontalCutAmount = Mathf.Max(0, _horizontalCutAmount);
+        verticalCutAmount = _verticalCutAmount = Mathf.Max(0, _verticalCutAmount);
     }
 }
