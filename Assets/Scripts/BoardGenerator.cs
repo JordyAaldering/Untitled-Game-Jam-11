@@ -58,7 +58,7 @@ public class BoardGenerator : MonoBehaviour
     [SerializeField] private Transform componentsParent;
     [SerializeField] private Material[] componentMaterials;
     
-    private readonly MeshData board = new MeshData("Board Mesh");
+    private readonly MeshData boardMesh = new MeshData("Board Mesh");
     private BoardComponent[] components = new BoardComponent[0];
     
     private MeshFilter _boardMeshFilter;
@@ -90,7 +90,7 @@ public class BoardGenerator : MonoBehaviour
     
     private void Clear()
     {
-        board.Clear();
+        boardMesh.Clear();
         components = new BoardComponent[gridSettings.MaxComponents];
         
         int childCount = componentsParent.childCount;
@@ -106,46 +106,34 @@ public class BoardGenerator : MonoBehaviour
         for (int y = 0; y < verticalCutAmount + 1; y++)
         {
             int i = grid[x, y];
-            if (i == 0)
+            
+            MeshData mesh = boardMesh;
+            if (i > 0)
             {
-                board.vertices.Add(GetVertexPosition(x, y, horizontalCuts, verticalCuts));
-                board.vertices.Add(GetVertexPosition(x, y + 1, horizontalCuts, verticalCuts));
-                board.vertices.Add(GetVertexPosition(x + 1, y, horizontalCuts, verticalCuts));
-                board.vertices.Add(GetVertexPosition(x + 1, y + 1, horizontalCuts, verticalCuts));
-
-                int vertexCount = board.vertices.Count;
-                board.AddQuad(vertexCount - 4, vertexCount - 3, vertexCount - 2, vertexCount - 1);
-            }
-            else
-            {
-                // Create a new mesh if there is none.
                 if (components[i - 1] == null)
                     components[i - 1] = new BoardComponent("Component " + i);
-
-                MeshData mesh = components[i - 1].meshData;
-                
-                // Add vertices.
-                mesh.vertices.Add(GetVertexPosition(x, y, horizontalCuts, verticalCuts));
-                mesh.vertices.Add(GetVertexPosition(x, y + 1, horizontalCuts, verticalCuts));
-                mesh.vertices.Add(GetVertexPosition(x + 1, y, horizontalCuts, verticalCuts));
-                mesh.vertices.Add(GetVertexPosition(x + 1, y + 1, horizontalCuts, verticalCuts));
-
-                // Add triangles.
-                int vertexCount = mesh.vertices.Count;
-                components[i - 1].meshData.AddQuad(vertexCount - 4, vertexCount - 3, vertexCount - 2, vertexCount - 1);
+                mesh = components[i - 1].meshData;
             }
+            
+            mesh.vertices.Add(GetVertexPosition(x, y, horizontalCuts, verticalCuts));
+            mesh.vertices.Add(GetVertexPosition(x, y + 1, horizontalCuts, verticalCuts));
+            mesh.vertices.Add(GetVertexPosition(x + 1, y, horizontalCuts, verticalCuts));
+            mesh.vertices.Add(GetVertexPosition(x + 1, y + 1, horizontalCuts, verticalCuts));
+            
+            int vertexCount = mesh.vertices.Count;
+            mesh.AddQuad(vertexCount - 4, vertexCount - 3, vertexCount - 2, vertexCount - 1);
         }
     }
 
     private void BuildMeshes()
     {
-        boardMeshFilter.sharedMesh = board.CreateMesh();
+        boardMeshFilter.sharedMesh = boardMesh.CreateMesh();
         
         for (int i = 0; i < components.Length; i++)
         {
             if (components[i] == null)
                 break;
-
+            
             components[i].CreateObject(componentsParent);
             components[i].BuildMesh(componentMaterials[i % componentMaterials.Length]);
         }
@@ -161,17 +149,11 @@ public class BoardGenerator : MonoBehaviour
     
     private void OnValidate()
     {
-        _boardWidth = Mathf.Max(0.01f, boardWidth);
-        _boardHeight = Mathf.Max(0.01f, boardHeight);
+        boardWidth = _boardWidth = Mathf.Max(0.01f, boardWidth);
+        boardHeight = _boardHeight = Mathf.Max(0.01f, boardHeight);
         boardDepth = Mathf.Max(0.01f, boardDepth);
         
-        _horizontalCutAmount = Mathf.Max(0, horizontalCutAmount);
-        _verticalCutAmount = Mathf.Max(0, verticalCutAmount);
-        
-        boardWidth = _boardWidth;
-        boardHeight = _boardHeight;
-        
-        horizontalCutAmount = _horizontalCutAmount;
-        verticalCutAmount = _verticalCutAmount;
+        horizontalCutAmount = _horizontalCutAmount = Mathf.Max(0, horizontalCutAmount);
+        verticalCutAmount = _verticalCutAmount = Mathf.Max(0, verticalCutAmount);
     }
 }

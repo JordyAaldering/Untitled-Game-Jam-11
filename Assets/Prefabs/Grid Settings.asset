@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: 333002b0cc3048e6820dace75fc86e04, type: 3}
   m_Name: Grid Settings
-  m_EditorClassIdentifier: Assembly-CSharp:DefaultNamespace:GridSettings
+  m_EditorClassIdentifier: 
   width: 0
   height: 0
   deadZonePct: 0.01
