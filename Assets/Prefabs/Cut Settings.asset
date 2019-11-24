@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp:DefaultNamespace:CutSettings
   width: 9
   height: 6
-  maxCutOffset: 0.25
+  maxCutOffset: 0.3

@@ -2,7 +2,6 @@
 using DefaultNamespace;
 using UnityEngine;
 
-[RequireComponent(typeof(MeshFilter))]
 public class BoardGenerator : MonoBehaviour
 {
     [SerializeField] private float _boardWidth = 6f;
@@ -55,32 +54,32 @@ public class BoardGenerator : MonoBehaviour
 
     [SerializeField] private CutSettings cutSettings;
     [SerializeField] private GridSettings gridSettings;
+
+    [SerializeField] private Transform boardObject;
+    [SerializeField] private Transform componentsParent;
+    [SerializeField] private Material componentMaterial;
     
-    private int[,] grid = new int[0, 0];
-    private float[] horizontalCuts = new float[0];
-    private float[] verticalCuts = new float[0];
+    private readonly MeshData board = new MeshData("Board Mesh");
+    private BoardComponent[] components = new BoardComponent[0];
     
-    private readonly MeshData boardMesh = new MeshData("Board Mesh");
     private MeshFilter _boardMeshFilter;
-    private MeshFilter BoardBoardMeshFilter
+    private MeshFilter boardMeshFilter
     {
         get
         {
             if (!_boardMeshFilter)
-                _boardMeshFilter = GetComponent<MeshFilter>();
+                _boardMeshFilter = boardObject.GetComponent<MeshFilter>();
             return _boardMeshFilter;
         }
     }
 
-    [SerializeField] private GameObject componentPrefab;
-    private MeshData[] componentMeshes = new MeshData[0];
-    private GameObject[] componentObjects = new GameObject[0];
+    private int[,] grid = new int[0, 0];
+    private float[] horizontalCuts = new float[0];
+    private float[] verticalCuts = new float[0];
+    
+    public void Generate() => CreateBoard();
 
-    private void Awake() => CreatePlane();
-
-    public void Generate() => CreatePlane();
-
-    private void CreatePlane()
+    private void CreateBoard()
     {
         Clear();
         
@@ -93,22 +92,12 @@ public class BoardGenerator : MonoBehaviour
 
     private void Clear()
     {
-        // Clear old board mesh.
-        boardMesh.Clear();
+        board.Clear();
+        components = new BoardComponent[gridSettings.MaxComponents];
         
-        // Remove old components.
-        for (int i = 0; i < componentObjects.Length; i++)
-        {
-            if (componentObjects[i] == null)
-                break;
-
-            DestroyImmediate(componentObjects[i]);
-            componentObjects[i] = null;
-        }
-        
-        // Clear old components.
-        componentMeshes = new MeshData[gridSettings.MaxComponents];
-        componentObjects = new GameObject[gridSettings.MaxComponents];
+        int children = componentsParent.childCount;
+        for (int i = children - 1; i >= 0; i--)
+            DestroyImmediate(componentsParent.GetChild(i).gameObject);
     }
 
     private void CreateMeshes()
@@ -121,14 +110,14 @@ public class BoardGenerator : MonoBehaviour
             if (i == 0)
             {
                 // Add vertices.
-                boardMesh.vertices.Add(GetVertexPosition(x, y, horizontalCuts, verticalCuts));
-                boardMesh.vertices.Add(GetVertexPosition(x, y + 1, horizontalCuts, verticalCuts));
-                boardMesh.vertices.Add(GetVertexPosition(x + 1, y, horizontalCuts, verticalCuts));
-                boardMesh.vertices.Add(GetVertexPosition(x + 1, y + 1, horizontalCuts, verticalCuts));
+                board.vertices.Add(GetVertexPosition(x, y, horizontalCuts, verticalCuts));
+                board.vertices.Add(GetVertexPosition(x, y + 1, horizontalCuts, verticalCuts));
+                board.vertices.Add(GetVertexPosition(x + 1, y, horizontalCuts, verticalCuts));
+                board.vertices.Add(GetVertexPosition(x + 1, y + 1, horizontalCuts, verticalCuts));
 
                 // Add triangles.
-                int vertexCount = boardMesh.vertices.Count;
-                boardMesh.AddQuad(vertexCount - 4, vertexCount - 3, vertexCount - 2, vertexCount - 1);
+                int vertexCount = board.vertices.Count;
+                board.AddQuad(vertexCount - 4, vertexCount - 3, vertexCount - 2, vertexCount - 1);
             }
             else
             {
@@ -136,18 +125,20 @@ public class BoardGenerator : MonoBehaviour
                 i--;
                 
                 // Create a new mesh if there is none.
-                if (componentMeshes[i] == null)
-                    componentMeshes[i] = new MeshData("Component Mesh " + i);
+                if (components[i] == null)
+                    components[i] = new BoardComponent("Component " + i);
+
+                MeshData mesh = components[i].meshData;
                 
                 // Add vertices.
-                componentMeshes[i].vertices.Add(GetVertexPosition(x, y, horizontalCuts, verticalCuts));
-                componentMeshes[i].vertices.Add(GetVertexPosition(x, y + 1, horizontalCuts, verticalCuts));
-                componentMeshes[i].vertices.Add(GetVertexPosition(x + 1, y, horizontalCuts, verticalCuts));
-                componentMeshes[i].vertices.Add(GetVertexPosition(x + 1, y + 1, horizontalCuts, verticalCuts));
+                mesh.vertices.Add(GetVertexPosition(x, y, horizontalCuts, verticalCuts));
+                mesh.vertices.Add(GetVertexPosition(x, y + 1, horizontalCuts, verticalCuts));
+                mesh.vertices.Add(GetVertexPosition(x + 1, y, horizontalCuts, verticalCuts));
+                mesh.vertices.Add(GetVertexPosition(x + 1, y + 1, horizontalCuts, verticalCuts));
 
                 // Add triangles.
-                int vertexCount = componentMeshes[i].vertices.Count;
-                componentMeshes[i].AddQuad(vertexCount - 4, vertexCount - 3, vertexCount - 2, vertexCount - 1);
+                int vertexCount = mesh.vertices.Count;
+                components[i].meshData.AddQuad(vertexCount - 4, vertexCount - 3, vertexCount - 2, vertexCount - 1);
             }
         }
     }
@@ -155,20 +146,16 @@ public class BoardGenerator : MonoBehaviour
     private void BuildMeshes()
     {
         // Build board mesh.
-        BoardBoardMeshFilter.sharedMesh = boardMesh.CreateMesh();
+        boardMeshFilter.sharedMesh = board.CreateMesh();
         
         // Build component meshes.
         for (int i = 0; i < gridSettings.MaxComponents; i++)
         {
-            if (componentMeshes[i] == null)
+            if (components[i] == null)
                 break;
 
-            Transform t = transform;
-            componentObjects[i] = Instantiate(componentPrefab, t.position, Quaternion.identity, t);
-
-            Mesh mesh = componentMeshes[i].CreateMesh();
-            componentObjects[i].GetComponent<MeshFilter>().sharedMesh = mesh;
-            componentObjects[i].GetComponent<MeshCollider>().sharedMesh = mesh;
+            components[i].CreateObject(componentsParent);
+            components[i].BuildMesh(componentMaterial);
         }
     }
 

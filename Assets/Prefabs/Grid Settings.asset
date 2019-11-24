@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: Grid Settings
   m_EditorClassIdentifier: Assembly-CSharp:DefaultNamespace:GridSettings
-  width: 10
-  height: 7
-  deadZoneSize: 1
-  minSteps: 1
-  maxSteps: 3
-  stepStopChance: 0.2
-  minComponents: 1
-  maxComponents: 3
-  componentStopChance: 0.2
-  maxFindTries: 100
+  width: 0
+  height: 0
+  deadZonePct: 0.01
+  minRangePct: 0.25
+  maxRangePct: 0.75
+  stepStopChance: 0.5
+  minComponentsPct: 0.25
+  maxComponentsPct: 0.75
+  componentStopChance: 0.5
+  maxFindTries: 10
