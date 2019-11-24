@@ -11,9 +11,9 @@ namespace DefaultNamespace
             int components = 0;
             int x = (settings.MinX + settings.MaxX) / 2;
             int y = (settings.MinY + settings.MaxY) / 2;
-            while (components < settings.maxComponents)
+            while (components < settings.MaxComponents)
             {
-                if (components > settings.maxComponents && Random.Range(0f, 1f) < settings.componentStopChance)
+                if (components > settings.MinComponents && Random.Range(0f, 1f) < settings.componentStopChance)
                     return grid;
 
                 components++;
@@ -38,9 +38,9 @@ namespace DefaultNamespace
         private static void CreateComponent(ref int[,] grid, ref int x, ref int y, int i, GridSettings settings)
         {
             int steps = 0, tries = 0;
-            while (steps < settings.maxSteps)
+            while (steps < settings.MaxRange)
             {
-                if (steps > settings.maxSteps && Random.Range(0f, 1f) < settings.stepStopChance)
+                if (steps > settings.MinRange && Random.Range(0f, 1f) < settings.stepStopChance)
                     return;
 
                 if (grid[x, y] == 0)
@@ -68,34 +68,28 @@ namespace DefaultNamespace
         [HideInInspector] public int width = 0;
         [HideInInspector] public int height = 0;
         
-        public int deadZoneSize = 1;
-        
-        public int minSteps = 1;
-        public int maxSteps = 2;
+        [Range(0f, 1f)] public float deadZonePct = 0.01f;
+        public int DeadZoneSize => Mathf.CeilToInt((width + height) * 0.5f * deadZonePct);
+
+        [Range(0f, 1f)] public float minRangePct = 0.25f;
+        [Range(0f, 1f)] public float maxRangePct = 0.75f;
         [Range(0f, 1f)] public float stepStopChance = 0.5f;
         
-        public int minComponents = 1;
-        public int maxComponents = 2;
+        public int MinRange => Mathf.RoundToInt((width + height) * 0.5f * minRangePct);
+        public int MaxRange => Mathf.RoundToInt((width + height) * 0.5f * maxRangePct);
+        
+        [Range(0f, 1f)] public float minComponentsPct = 0.25f;
+        [Range(0f, 1f)] public float maxComponentsPct = 0.75f;
         [Range(0f, 1f)] public float componentStopChance = 0.5f;
 
         public int maxFindTries = 10;
         
-        public int MinX => deadZoneSize;
-        public int MaxX => width - deadZoneSize - 1;
-        public int MinY => deadZoneSize;
-        public int MaxY => height - deadZoneSize - 1;
-        
-        private void OnValidate()
-        {
-            deadZoneSize = Mathf.Max(0, deadZoneSize);
-            
-            maxSteps = Mathf.Max(0, maxSteps);
-            minSteps = Mathf.Clamp(minSteps, 0, maxSteps);
+        public int MinComponents => Mathf.CeilToInt((width + height) * 0.5f * minComponentsPct);
+        public int MaxComponents => Mathf.CeilToInt((width + height) * 0.5f * maxComponentsPct);
 
-            maxComponents = Mathf.Max(1, maxComponents);
-            minComponents = Mathf.Clamp(minComponents, 1, maxComponents);
-
-            maxFindTries = Mathf.Max(1, maxFindTries);
-        }
+        public int MinX => DeadZoneSize;
+        public int MaxX => width - DeadZoneSize - 1;
+        public int MinY => DeadZoneSize;
+        public int MaxY => height - DeadZoneSize - 1;
     }
 }

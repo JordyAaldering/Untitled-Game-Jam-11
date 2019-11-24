@@ -107,8 +107,8 @@ public class BoardGenerator : MonoBehaviour
         }
         
         // Clear old components.
-        componentMeshes = new MeshData[gridSettings.maxComponents];
-        componentObjects = new GameObject[gridSettings.maxComponents];
+        componentMeshes = new MeshData[gridSettings.MaxComponents];
+        componentObjects = new GameObject[gridSettings.MaxComponents];
     }
 
     private void CreateMeshes()
@@ -158,7 +158,7 @@ public class BoardGenerator : MonoBehaviour
         BoardBoardMeshFilter.sharedMesh = boardMesh.CreateMesh();
         
         // Build component meshes.
-        for (int i = 0; i < gridSettings.maxComponents; i++)
+        for (int i = 0; i < gridSettings.MaxComponents; i++)
         {
             if (componentMeshes[i] == null)
                 break;
