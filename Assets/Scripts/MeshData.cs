@@ -22,18 +22,32 @@ public class MeshData
         normals.Clear();
         uvs.Clear();
     }
-    
-    public void AddQuadTriangles(int v00, int v01, int v10, int v11)
+
+    public void AddFace(Vector3 a, Vector3 b, Vector3 c, Vector3 d)
     {
-        triangles.Add(v00);
-        triangles.Add(v01);
-        triangles.Add(v10);
+        int vertexStart = vertices.Count;
         
-        triangles.Add(v01);
-        triangles.Add(v11);
-        triangles.Add(v10);
+        vertices.Add(a);
+        vertices.Add(b);
+        vertices.Add(c);
+        vertices.Add(d);
+        
+        AddTriangles(vertexStart, vertexStart + 1, vertexStart + 2, vertexStart + 3);
     }
     
+    public void AddTriangles(int a, int b, int c, int d)
+    {
+        AddTriangle(b, c, a);
+        AddTriangle(b, d, c);
+    }
+
+    public void AddTriangle(int a, int b, int c)
+    {
+        triangles.Add(a);
+        triangles.Add(b);
+        triangles.Add(c);
+    }
+
     public Mesh CreateMesh()
     {
         Mesh mesh = new Mesh

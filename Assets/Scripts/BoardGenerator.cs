@@ -115,21 +115,35 @@ public class BoardGenerator : MonoBehaviour
                 mesh = components[i - 1].meshData;
             }
             
-            mesh.vertices.Add(GetVertexPosition(x, y, horizontalCuts, verticalCuts));
-            mesh.vertices.Add(GetVertexPosition(x, y + 1, horizontalCuts, verticalCuts));
-            mesh.vertices.Add(GetVertexPosition(x + 1, y, horizontalCuts, verticalCuts));
-            mesh.vertices.Add(GetVertexPosition(x + 1, y + 1, horizontalCuts, verticalCuts));
-            
-            int vertexCount = mesh.vertices.Count;
-            mesh.AddQuadTriangles(vertexCount - 4, vertexCount - 3, vertexCount - 2, vertexCount - 1);
+            AddCube(mesh, x, y, 0f);
         }
     }
+    
+    private void AddCube(MeshData mesh, int x, int y, float z)
+    {
+        Vector3 a = GetVertexPosition(x, y, z);
+        Vector3 b = GetVertexPosition(x, y + 1, z);
+        Vector3 c = GetVertexPosition(x + 1, y, z);
+        Vector3 d = GetVertexPosition(x + 1, y + 1, z);
+        
+        Vector3 e = GetVertexPosition(x, y, z + boardDepth);
+        Vector3 f = GetVertexPosition(x, y + 1, z + boardDepth);
+        Vector3 g = GetVertexPosition(x + 1, y, z + boardDepth);
+        Vector3 h = GetVertexPosition(x + 1, y + 1, z + boardDepth);
+        
+        mesh.AddFace(a, b, c, d);
+        mesh.AddFace(a, e, b, f);
+        mesh.AddFace(b, f, d, h);
+        mesh.AddFace(d, h, c, g);
+        mesh.AddFace(c, g, a, e);
+    }
 
-    private Vector3 GetVertexPosition(int x, int y, float[] horizontalCuts, float[] verticalCuts)
+    private Vector3 GetVertexPosition(int x, int y, float z)
     {
         return new Vector3(
             x == 0 ? 0f : x <= horizontalCutAmount ? horizontalCuts[x - 1] : boardWidth,
-            y == 0 ? 0f : y <= verticalCutAmount ? verticalCuts[y - 1] : boardHeight
+            y == 0 ? 0f : y <= verticalCutAmount ? verticalCuts[y - 1] : boardHeight,
+            z
         );
     }
     
