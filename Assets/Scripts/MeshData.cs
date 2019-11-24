@@ -9,7 +9,7 @@ public class MeshData
     public readonly List<int> triangles = new List<int>();
     public readonly List<Vector3> normals = new List<Vector3>();
     public readonly List<Vector2> uvs = new List<Vector2>();
-
+    
     public MeshData(string name)
     {
         this.name = name;
@@ -22,7 +22,7 @@ public class MeshData
         normals.Clear();
         uvs.Clear();
     }
-
+    
     public void AddQuad(int v00, int v01, int v10, int v11)
     {
         triangles.Add(v00);
@@ -33,7 +33,7 @@ public class MeshData
         triangles.Add(v11);
         triangles.Add(v10);
     }
-
+    
     public Mesh CreateMesh()
     {
         Mesh mesh = new Mesh
@@ -43,10 +43,10 @@ public class MeshData
             triangles = triangles.ToArray(),
             uv = uvs.ToArray()
         };
-
+        
         if (normals.Count > 0) mesh.normals = normals.ToArray();
         else mesh.RecalculateNormals();
-
+        
         return mesh;
     }
 }

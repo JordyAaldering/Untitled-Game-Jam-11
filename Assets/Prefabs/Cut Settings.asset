@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: Cut Settings
   m_EditorClassIdentifier: Assembly-CSharp:DefaultNamespace:CutSettings
-  width: 0
-  height: 0
-  maxCutOffset: 0.5
+  width: 16
+  height: 10
+  maxCutOffset: 0.25

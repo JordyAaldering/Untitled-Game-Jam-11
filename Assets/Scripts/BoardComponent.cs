@@ -2,14 +2,15 @@ using UnityEngine;
 
 public class BoardComponent
 {
-    private string name;
+    private readonly string name;
+    
     public readonly MeshData meshData;
-    public GameObject gameObject;
+    private GameObject gameObject;
 
     public BoardComponent(string name)
     {
         this.name = name;
-        meshData = new MeshData(name);
+        meshData = new MeshData(name + " mesh");
     }
 
     public void CreateObject(Transform parent)
