@@ -1,10 +1,16 @@
-﻿using UnityEngine;
+﻿#pragma warning disable 0649
+using System.Linq;
+using Cut;
+using UnityEngine;
+using Utilities;
 
 namespace Player
 {
     [RequireComponent(typeof(Camera))]
     public class DragComponent : MonoBehaviour
     {
+        [SerializeField] private CutSettings cutSettings;
+        
         private bool isDragging;
         private GameObject target;
         private Vector3 origin;
@@ -54,6 +60,10 @@ namespace Player
         {
             Vector3 mousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, origin.z);
             Vector3 nextPos = cam.ScreenToWorldPoint(mousePos) + offset;
+
+            nextPos.x = cutSettings.horizontalCuts.GetClosest(nextPos.x);
+            nextPos.y = cutSettings.verticalCuts.GetClosest(nextPos.y);
+            
             target.transform.position = nextPos;
         }
 

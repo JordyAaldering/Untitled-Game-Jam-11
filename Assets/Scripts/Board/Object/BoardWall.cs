@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Board
+namespace Board.Object
 {
     public class BoardWall : BoardObject
     {

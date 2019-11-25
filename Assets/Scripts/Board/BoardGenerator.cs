@@ -1,4 +1,5 @@
 ﻿#pragma warning disable 0649
+using Board.Object;
 using Cut;
 using Grid;
 using UnityEngine;
@@ -57,7 +58,7 @@ namespace Board
                 if (i > 0)
                 {
                     if (components[i - 1] == null)
-                        components[i - 1] = new BoardComponent("Component " + i, new Vector3(x, y));
+                        components[i - 1] = new BoardComponent("Component " + i, GetVertexPosition(x, y, 0f));
                     obj = components[i - 1];
                 }
             

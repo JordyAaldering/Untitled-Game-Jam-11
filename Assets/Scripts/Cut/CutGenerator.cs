@@ -23,10 +23,10 @@ namespace Cut
             if (amount == 0)
                 return;
 
-            float[] cuts = GetFractions(amount, cutSettings);
+            SetHorizontalFractions(cutSettings, amount);
             for (int i = 0; i < amount; i++)
             {
-                cutSettings.horizontalCuts[i] = cuts[i] * cutSettings.wallWidth;
+                cutSettings.horizontalCuts[i] = cutSettings.horizontalCutFractions[i] * cutSettings.wallWidth;
             }
         }
 
@@ -36,27 +36,39 @@ namespace Cut
             if (amount == 0)
                 return;
 
-            float[] cuts = GetFractions(amount, cutSettings);
+            SetVerticalFractions(cutSettings, amount);
             for (int i = 0; i < amount; i++)
             {
-                cutSettings.verticalCuts[i] = cuts[i] * cutSettings.wallHeight;
+                cutSettings.verticalCuts[i] = cutSettings.verticalCutFractions[i] * cutSettings.wallHeight;
             }
         }
 
-        private static float[] GetFractions(int amount, CutSettings settings)
+        private static void SetHorizontalFractions(CutSettings cutSettings, int amount)
         {
             float avg = (float) 1 / (amount + 1);
-            float maxOffset = avg * 0.5f * settings.maxCutOffset;
+            float maxOffset = avg * 0.5f * cutSettings.maxCutOffset;
 
-            float[] fractions = new float[amount];
+            cutSettings.horizontalCutFractions = new float[amount];
             for (int i = 0; i < amount; i++)
             {
                 float frac = (float) (i + 1) / (amount + 1);
                 frac += Random.Range(-maxOffset, maxOffset);
-                fractions[i] = frac;
+                cutSettings.horizontalCutFractions[i] = frac;
             }
+        }
+        
+        private static void SetVerticalFractions(CutSettings cutSettings, int amount)
+        {
+            float avg = (float) 1 / (amount + 1);
+            float maxOffset = avg * 0.5f * cutSettings.maxCutOffset;
 
-            return fractions;
+            cutSettings.verticalCutFractions = new float[amount];
+            for (int i = 0; i < amount; i++)
+            {
+                float frac = (float) (i + 1) / (amount + 1);
+                frac += Random.Range(-maxOffset, maxOffset);
+                cutSettings.verticalCutFractions[i] = frac;
+            }
         }
     }
 }
