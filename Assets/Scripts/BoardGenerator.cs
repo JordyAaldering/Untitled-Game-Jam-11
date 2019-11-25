@@ -54,11 +54,15 @@ public class BoardGenerator : MonoBehaviour
     [SerializeField] private CutSettings cutSettings;
     [SerializeField] private GridSettings gridSettings;
     
-    [SerializeField] private Transform boardObject;
+    [SerializeField] private GameObject wallObject;
     [SerializeField] private Transform componentsParent;
+
+    [SerializeField] private Material wallMaterial;
     [SerializeField] private Material[] componentMaterials;
-    
-    private readonly MeshData boardMesh = new MeshData("Board Mesh");
+
+    private BoardWall _wall;
+    private BoardWall wall => _wall ?? (_wall = new BoardWall(wallObject));
+
     private BoardComponent[] components = new BoardComponent[0];
     
     private MeshFilter _boardMeshFilter;
@@ -67,7 +71,7 @@ public class BoardGenerator : MonoBehaviour
         get
         {
             if (!_boardMeshFilter)
-                _boardMeshFilter = boardObject.GetComponent<MeshFilter>();
+                _boardMeshFilter = wallObject.GetComponent<MeshFilter>();
             return _boardMeshFilter;
         }
     }
@@ -75,6 +79,8 @@ public class BoardGenerator : MonoBehaviour
     private int[,] grid = new int[0, 0];
     private float[] horizontalCuts = new float[0];
     private float[] verticalCuts = new float[0];
+
+    private void Awake() => CreateBoard();
     
     public void Generate() => CreateBoard();
     
@@ -90,7 +96,7 @@ public class BoardGenerator : MonoBehaviour
     
     private void Clear()
     {
-        boardMesh.Clear();
+        wall.Clear();
         components = new BoardComponent[gridSettings.MaxComponents];
         
         int childCount = componentsParent.childCount;
@@ -107,19 +113,19 @@ public class BoardGenerator : MonoBehaviour
         {
             int i = grid[x, y];
             
-            MeshData mesh = boardMesh;
+            BoardObject obj = wall;
             if (i > 0)
             {
                 if (components[i - 1] == null)
-                    components[i - 1] = new BoardComponent("Component " + i);
-                mesh = components[i - 1].meshData;
+                    components[i - 1] = new BoardComponent("Component " + i, new Vector3(x, y));
+                obj = components[i - 1];
             }
             
-            AddCube(mesh, x, y, 0f);
+            AddCube(obj, x, y, 0f);
         }
     }
     
-    private void AddCube(MeshData mesh, int x, int y, float z)
+    private void AddCube(BoardObject obj, int x, int y, float z)
     {
         Vector3 a = GetVertexPosition(x, y, z);
         Vector3 b = GetVertexPosition(x, y + 1, z);
@@ -132,23 +138,23 @@ public class BoardGenerator : MonoBehaviour
         Vector3 h = GetVertexPosition(x + 1, y + 1, z + boardDepth);
         
         // front
-        mesh.AddFace(a, b, c, d);
+        obj.AddFace(a, b, c, d);
         
         // left
         if (IsFaceVisible(x, y, -1, 0))
-            mesh.AddFace(a, e, b, f);
+            obj.AddFace(a, e, b, f);
         
         // top
         if (IsFaceVisible(x, y, 0, 1))
-            mesh.AddFace(b, f, d, h);
+            obj.AddFace(b, f, d, h);
         
         // right
         if (IsFaceVisible(x, y, 1, 0))
-            mesh.AddFace(d, h, c, g);
+            obj.AddFace(d, h, c, g);
         
         // bottom
         if (IsFaceVisible(x, y, 0, -1))
-            mesh.AddFace(c, g, a, e);
+            obj.AddFace(c, g, a, e);
     }
 
     private Vector3 GetVertexPosition(int x, int y, float z)
@@ -173,7 +179,7 @@ public class BoardGenerator : MonoBehaviour
     
     private void BuildMeshes()
     {
-        boardMeshFilter.sharedMesh = boardMesh.CreateMesh();
+        wall.CreateMesh(wallMaterial, false);
         
         for (int i = 0; i < components.Length; i++)
         {
@@ -181,7 +187,7 @@ public class BoardGenerator : MonoBehaviour
                 break;
             
             components[i].CreateObject(componentsParent);
-            components[i].BuildMesh(componentMaterials[i % componentMaterials.Length]);
+            components[i].CreateMesh(componentMaterials[i % componentMaterials.Length], i > 0);
         }
     }
 
