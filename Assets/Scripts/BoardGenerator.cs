@@ -131,11 +131,24 @@ public class BoardGenerator : MonoBehaviour
         Vector3 g = GetVertexPosition(x + 1, y, z + boardDepth);
         Vector3 h = GetVertexPosition(x + 1, y + 1, z + boardDepth);
         
+        // front
         mesh.AddFace(a, b, c, d);
-        mesh.AddFace(a, e, b, f);
-        mesh.AddFace(b, f, d, h);
-        mesh.AddFace(d, h, c, g);
-        mesh.AddFace(c, g, a, e);
+        
+        // left
+        if (IsFaceVisible(x, y, -1, 0))
+            mesh.AddFace(a, e, b, f);
+        
+        // top
+        if (IsFaceVisible(x, y, 0, 1))
+            mesh.AddFace(b, f, d, h);
+        
+        // right
+        if (IsFaceVisible(x, y, 1, 0))
+            mesh.AddFace(d, h, c, g);
+        
+        // bottom
+        if (IsFaceVisible(x, y, 0, -1))
+            mesh.AddFace(c, g, a, e);
     }
 
     private Vector3 GetVertexPosition(int x, int y, float z)
@@ -145,6 +158,17 @@ public class BoardGenerator : MonoBehaviour
             y == 0 ? 0f : y <= verticalCutAmount ? verticalCuts[y - 1] : boardHeight,
             z
         );
+    }
+
+    private bool IsFaceVisible(int x, int y, int dirX, int dirY)
+    {
+        int toX = x + dirX;
+        int toY = y + dirY;
+        
+        if (toX < 0 || toX > horizontalCutAmount || toY < 0 || toY > verticalCutAmount)
+            return true;
+
+        return grid[x, y] != grid[toX, toY];
     }
     
     private void BuildMeshes()
