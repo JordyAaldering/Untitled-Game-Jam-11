@@ -5,6 +5,7 @@ namespace Grid
     [CreateAssetMenu(menuName = "Game Settings/Grid Settings", fileName = "New Grid Settings")]
     public class GridSettings : ScriptableObject
     {
+        [HideInInspector] public int[,] grid = new int[0, 0];
         [HideInInspector] public int width = 0;
         [HideInInspector] public int height = 0;
 

@@ -18,10 +18,6 @@ namespace Board
         private BoardWall wall => _wall ?? (_wall = new BoardWall(wallObject));
         private BoardComponent[] components = new BoardComponent[0];
 
-        private int[,] grid = new int[0, 0];
-        private float[] horizontalCuts = new float[0];
-        private float[] verticalCuts = new float[0];
-
         private void Awake() => CreateBoard();
         public void Generate() => CreateBoard();
     
@@ -29,8 +25,8 @@ namespace Board
         {
             Clear();
         
-            CutGenerator.Cut(ref horizontalCuts, ref verticalCuts, cutSettings);
-            grid = GridGenerator.PopulateGrid(gridSettings);
+            CutGenerator.Cut(boardSettings, cutSettings);
+            GridGenerator.PopulateGrid(boardSettings, gridSettings);
 
             CreateMeshes();
             BuildMeshes();
@@ -38,14 +34,6 @@ namespace Board
     
         private void Clear()
         {
-            cutSettings.width = boardSettings.boardWidth;
-            cutSettings.height = boardSettings.boardHeight;
-        
-            gridSettings.width = boardSettings.horizontalCutAmount + 1;
-            gridSettings.height = boardSettings.verticalCutAmount + 1;
-            horizontalCuts = new float[boardSettings.horizontalCutAmount];
-            verticalCuts = new float[boardSettings.verticalCutAmount];
-        
             wall.Clear();
             components = new BoardComponent[gridSettings.MaxComponents];
         
@@ -61,7 +49,7 @@ namespace Board
             for (int x = 0; x < boardSettings.horizontalCutAmount + 1; x++)
             for (int y = 0; y < boardSettings.verticalCutAmount + 1; y++)
             {
-                int i = grid[x, y];
+                int i = gridSettings.grid[x, y];
             
                 BoardObject obj = wall;
                 if (i > 0)
@@ -110,8 +98,8 @@ namespace Board
         private Vector3 GetVertexPosition(int x, int y, float z)
         {
             return new Vector3(
-                x == 0 ? 0f : x <= boardSettings.horizontalCutAmount ? horizontalCuts[x - 1] : boardSettings.boardWidth,
-                y == 0 ? 0f : y <= boardSettings.verticalCutAmount ? verticalCuts[y - 1] : boardSettings.boardHeight,
+                x == 0 ? 0f : x <= boardSettings.horizontalCutAmount ? cutSettings.horizontalCuts[x - 1] : boardSettings.boardWidth,
+                y == 0 ? 0f : y <= boardSettings.verticalCutAmount ? cutSettings.verticalCuts[y - 1] : boardSettings.boardHeight,
                 z
             );
         }
@@ -122,7 +110,7 @@ namespace Board
             if (toX < 0 || toX > boardSettings.horizontalCutAmount || toY < 0 || toY > boardSettings.verticalCutAmount)
                 return true;
 
-            return grid[x, y] != grid[toX, toY];
+            return gridSettings.grid[x, y] != gridSettings.grid[toX, toY];
         }
     
         private void BuildMeshes()

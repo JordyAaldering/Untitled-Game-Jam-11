@@ -1,43 +1,46 @@
+using Board;
 using UnityEngine;
 
 namespace Cut
 {
     public static class CutGenerator
     {
-        public static void Cut(ref float[] horizontal, ref float[] vertical, CutSettings settings)
+        public static void Cut(BoardSettings boardSettings, CutSettings cutSettings)
         {
-            horizontal = CutHorizontal(horizontal, settings);
-            vertical = CutVertical(vertical, settings);
+            cutSettings.wallWidth = boardSettings.boardWidth;
+            cutSettings.wallHeight = boardSettings.boardHeight;
+            
+            cutSettings.horizontalCuts = new float[boardSettings.horizontalCutAmount];
+            cutSettings.verticalCuts = new float[boardSettings.verticalCutAmount];
+            
+            CutHorizontal(cutSettings);
+            CutVertical(cutSettings);
         }
 
-        private static float[] CutHorizontal(float[] horizontal, CutSettings settings)
+        private static void CutHorizontal(CutSettings cutSettings)
         {
-            int amount = horizontal.Length;
+            int amount = cutSettings.horizontalCuts.Length;
             if (amount == 0)
-                return new float[0];
+                return;
 
-            float[] cuts = GetFractions(amount, settings);
+            float[] cuts = GetFractions(amount, cutSettings);
             for (int i = 0; i < amount; i++)
             {
-                cuts[i] *= settings.width;
+                cutSettings.horizontalCuts[i] = cuts[i] * cutSettings.wallWidth;
             }
-
-            return cuts;
         }
 
-        private static float[] CutVertical(float[] vertical, CutSettings settings)
+        private static void CutVertical(CutSettings cutSettings)
         {
-            int amount = vertical.Length;
+            int amount = cutSettings.verticalCuts.Length;
             if (amount == 0)
-                return new float[0];
+                return;
 
-            float[] cuts = GetFractions(amount, settings);
+            float[] cuts = GetFractions(amount, cutSettings);
             for (int i = 0; i < amount; i++)
             {
-                cuts[i] *= settings.height;
+                cutSettings.verticalCuts[i] = cuts[i] * cutSettings.wallHeight;
             }
-
-            return cuts;
         }
 
         private static float[] GetFractions(int amount, CutSettings settings)
