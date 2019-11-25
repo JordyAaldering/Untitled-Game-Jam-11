@@ -21,7 +21,6 @@ namespace Board
         private BoardWall wall => _wall ?? (_wall = new BoardWall(wallObject));
         private BoardComponent[] components = new BoardComponent[0];
 
-        private void Awake() => CreateBoard();
         public void Generate() => CreateBoard();
     
         private void CreateBoard()

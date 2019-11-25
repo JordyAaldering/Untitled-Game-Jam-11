@@ -51,8 +51,7 @@ namespace Player
 
                 Vector3 pos = target.transform.position;
                 origin = cam.WorldToScreenPoint(pos);
-                offset = pos - cam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y,
-                             origin.z));
+                offset = pos - cam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, origin.z));
             }
         }
 

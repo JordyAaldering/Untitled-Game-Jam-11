@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   boardWidth: 16
   boardHeight: 10
-  boardDepth: 1
+  boardDepth: 0.8
   horizontalCutAmount: 16
   verticalCutAmount: 10
   wallMaterial: {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
