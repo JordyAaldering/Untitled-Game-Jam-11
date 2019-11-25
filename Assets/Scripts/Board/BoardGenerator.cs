@@ -7,13 +7,15 @@ namespace Board
 {
     public class BoardGenerator : MonoBehaviour
     {
+        [Header("Settings")]
         [SerializeField] private BoardSettings boardSettings;
         [SerializeField] private CutSettings cutSettings;
         [SerializeField] private GridSettings gridSettings;
     
+        [Header("References")]
         [SerializeField] private GameObject wallObject;
         [SerializeField] private Transform componentsParent;
-
+        
         private BoardWall _wall;
         private BoardWall wall => _wall ?? (_wall = new BoardWall(wallObject));
         private BoardComponent[] components = new BoardComponent[0];

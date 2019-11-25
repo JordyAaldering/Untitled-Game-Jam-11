@@ -9,10 +9,10 @@ namespace Board
         public override void OnInspectorGUI()
         {
             DrawDefaultInspector();
-            BoardGenerator boardGenerator = (BoardGenerator) target;
-
+            
             if (GUILayout.Button("Generate"))
             {
+                BoardGenerator boardGenerator = (BoardGenerator) target;
                 boardGenerator.Generate();
             }
         }
