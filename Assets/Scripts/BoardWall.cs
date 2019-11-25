@@ -10,8 +10,8 @@ public class BoardWall : BoardObject
     public BoardWall(GameObject gameObject)
     {
         meshData = new MeshData("Board wall mesh");
-        meshFilter = gameObject.GetComponent<MeshFilter>();
-        meshRenderer = gameObject.GetComponent<MeshRenderer>();
+        meshFilter = gameObject.GetComponent<MeshFilter>() ?? gameObject.AddComponent<MeshFilter>();
+        meshRenderer = gameObject.GetComponent<MeshRenderer>() ?? gameObject.AddComponent<MeshRenderer>();
     }
 
     public void Clear()

@@ -6,7 +6,7 @@ public class BoardComponent : BoardObject
 
     private readonly MeshData meshData;
     private GameObject gameObject;
-    private Vector3 offset;
+    private readonly Vector3 offset;
 
     public BoardComponent(string name, Vector3 offset)
     {
