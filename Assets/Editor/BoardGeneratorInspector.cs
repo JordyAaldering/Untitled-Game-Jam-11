@@ -1,17 +1,20 @@
 using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(BoardGenerator))]
-public class BoardGeneratorInspector : Editor
+namespace Board
 {
-    public override void OnInspectorGUI()
+    [CustomEditor(typeof(BoardGenerator))]
+    public class BoardGeneratorInspector : Editor
     {
-        DrawDefaultInspector();
-        BoardGenerator boardGenerator = (BoardGenerator) target;
-
-        if (GUILayout.Button("Generate"))
+        public override void OnInspectorGUI()
         {
-            boardGenerator.Generate();
+            DrawDefaultInspector();
+            BoardGenerator boardGenerator = (BoardGenerator) target;
+
+            if (GUILayout.Button("Generate"))
+            {
+                boardGenerator.Generate();
+            }
         }
     }
 }
