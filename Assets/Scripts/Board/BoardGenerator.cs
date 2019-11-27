@@ -12,6 +12,7 @@ namespace Board
         [SerializeField] private BoardSettings boardSettings;
         [SerializeField] private CutSettings cutSettings;
         [SerializeField] private GridSettings gridSettings;
+        [SerializeField] private GridCurrent gridCurrent;
     
         [Header("References")]
         [SerializeField] private GameObject wallObject;
@@ -37,6 +38,8 @@ namespace Board
         private void Clear()
         {
             wall.Clear();
+            gridSettings.Clear(boardSettings);
+            gridCurrent.Clear();
             components = new BoardComponent[gridSettings.MaxComponents];
         
             int childCount = componentsParent.childCount;
@@ -63,6 +66,8 @@ namespace Board
             
                 AddCube(obj, x, y, 0f);
             }
+            
+            gridCurrent.Populate(gridSettings);
         }
     
         private void AddCube(BoardObject obj, int x, int y, float z)
@@ -125,7 +130,7 @@ namespace Board
                     break;
             
                 components[i].CreateObject(componentsParent);
-                components[i].CreateMesh(boardSettings.GetComponentMaterial(i), i > 0);
+                components[i].CreateMesh(boardSettings.GetComponentMaterial(i), true);
             }
         }
     }

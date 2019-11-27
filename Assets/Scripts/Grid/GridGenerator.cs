@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Board;
 using UnityEngine;
 
@@ -7,10 +8,8 @@ namespace Grid
     {
         public static void PopulateGrid(BoardSettings boardSettings, GridSettings gridSettings)
         {
-            gridSettings.width = boardSettings.horizontalCutAmount + 1;
-            gridSettings.height = boardSettings.verticalCutAmount + 1;
-            gridSettings.grid = new int[gridSettings.width, gridSettings.height];
-
+            gridSettings.Clear(boardSettings);
+            
             int components = 0;
             int x = (gridSettings.MinX + gridSettings.MaxX) / 2;
             int y = (gridSettings.MinY + gridSettings.MaxY) / 2;

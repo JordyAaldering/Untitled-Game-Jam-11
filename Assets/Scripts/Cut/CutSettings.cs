@@ -13,7 +13,5 @@ namespace Cut
         
         [HideInInspector] public float wallWidth = 0;
         [HideInInspector] public float wallHeight = 0;
-
-        [Range(0f, 1f)] public float maxCutOffset = 0.25f;
     }
 }

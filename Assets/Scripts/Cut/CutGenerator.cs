@@ -1,5 +1,4 @@
 using Board;
-using UnityEngine;
 
 namespace Cut
 {
@@ -45,29 +44,19 @@ namespace Cut
 
         private static void SetHorizontalFractions(CutSettings cutSettings, int amount)
         {
-            float avg = (float) 1 / (amount + 1);
-            float maxOffset = avg * 0.5f * cutSettings.maxCutOffset;
-
             cutSettings.horizontalCutFractions = new float[amount];
             for (int i = 0; i < amount; i++)
             {
-                float frac = (float) (i + 1) / (amount + 1);
-                frac += Random.Range(-maxOffset, maxOffset);
-                cutSettings.horizontalCutFractions[i] = frac;
+                cutSettings.horizontalCutFractions[i] = (float) (i + 1) / (amount + 1);
             }
         }
         
         private static void SetVerticalFractions(CutSettings cutSettings, int amount)
         {
-            float avg = (float) 1 / (amount + 1);
-            float maxOffset = avg * 0.5f * cutSettings.maxCutOffset;
-
             cutSettings.verticalCutFractions = new float[amount];
             for (int i = 0; i < amount; i++)
             {
-                float frac = (float) (i + 1) / (amount + 1);
-                frac += Random.Range(-maxOffset, maxOffset);
-                cutSettings.verticalCutFractions[i] = frac;
+                cutSettings.verticalCutFractions[i] = (float) (i + 1) / (amount + 1);
             }
         }
     }

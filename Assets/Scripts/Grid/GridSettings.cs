@@ -1,3 +1,4 @@
+using Board;
 using UnityEngine;
 
 namespace Grid
@@ -6,6 +7,7 @@ namespace Grid
     public class GridSettings : ScriptableObject
     {
         [HideInInspector] public int[,] grid = new int[0, 0];
+
         [HideInInspector] public int width = 0;
         [HideInInspector] public int height = 0;
         
@@ -31,5 +33,12 @@ namespace Grid
 
         [Range(0f, 1f)] public float deadZonePct = 0.01f;
         public int maxFindTries = 10;
+
+        public void Clear(BoardSettings boardSettings)
+        {
+            width = boardSettings.horizontalCutAmount + 1;
+            height = boardSettings.verticalCutAmount + 1;
+            grid = new int[width, height];
+        }
     }
 }

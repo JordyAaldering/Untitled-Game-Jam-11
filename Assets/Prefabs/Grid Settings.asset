@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 333002b0cc3048e6820dace75fc86e04, type: 3}
   m_Name: Grid Settings
   m_EditorClassIdentifier: 
-  width: 17
-  height: 11
+  width: 19
+  height: 13
   minRangePct: 0.25
   maxRangePct: 0.75
   stepStopChance: 0.5
   minComponentsPct: 0.25
   maxComponentsPct: 0.75
   componentStopChance: 0.5
-  deadZonePct: 0.01
+  deadZonePct: 0.1
   maxFindTries: 50
