@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Utilities;
 
 namespace Grid
 {
@@ -61,7 +62,26 @@ namespace Grid
             components[i] = next;
             return true;
         }
-        
+
+        public bool TryRotate(int i)
+        {
+            foreach (Vector2Int v in components[i])
+            {
+                grid[v.x, v.y] = 0;
+            }
+            
+            List<Vector2Int> next = new List<Vector2Int>();
+            foreach (Vector2Int v in components[i])
+            {
+                Vector2Int r = v.Rotate90Around(components[i][0]);
+                grid[r.x, r.y] = i;
+                next.Add(r);
+            }
+
+            components[i] = next;
+            return true;
+        }
+
         public void Clear()
         {
             components.Clear();

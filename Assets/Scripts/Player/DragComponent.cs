@@ -55,8 +55,8 @@ namespace Player
                 
                 foreach (Vector2Int v in component.Value)
                 {
-                    float x = cutSettings.horizontalCuts.GetClamped(v.x);
-                    float y = cutSettings.verticalCuts.GetClamped(v.y);
+                    float x = (cutSettings.horizontalCuts.GetClamped(v.x) + cutSettings.horizontalCuts.GetClamped(v.x - 1)) * 0.5f;
+                    float y = (cutSettings.verticalCuts.GetClamped(v.y) + cutSettings.verticalCuts.GetClamped(v.y - 1)) * 0.5f;
                     Gizmos.DrawSphere(new Vector3(x, y), 0.1f);
                 }
             }
@@ -101,7 +101,10 @@ namespace Player
 
         private void TryRotate()
         {
-            target.transform.Rotate(0f, 0f, 90f);
+            if (gridCurrent.TryRotate(int.Parse(Regex.Match(target.name, @"\d+").Value)))
+            {
+                target.transform.Rotate(0f, 0f, 90f);
+            }
         }
     }
 }
