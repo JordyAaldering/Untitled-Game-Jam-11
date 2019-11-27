@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Board;
 using UnityEngine;
+using Utilities;
 
 namespace Grid
 {
@@ -9,56 +10,91 @@ namespace Grid
         public static void PopulateGrid(BoardSettings boardSettings, GridSettings gridSettings)
         {
             gridSettings.Clear(boardSettings);
-            
+
             int components = 0;
-            int x = (gridSettings.MinX + gridSettings.MaxX) / 2;
-            int y = (gridSettings.MinY + gridSettings.MaxY) / 2;
-            while (components < gridSettings.MaxComponents)
+            int startX = (gridSettings.MinX + gridSettings.MaxX) / 2;
+            int startY = (gridSettings.MinY + gridSettings.MaxY) / 2;
+            
+            Queue<Vector2Int> queue = new Queue<Vector2Int>();
+            queue.Enqueue(new Vector2Int(startX, startY));
+            gridSettings.grid[startX, startY] = new GridPoint(1) {depth = gridSettings.maxRange / 2};
+
+            int i = 0;
+            while (queue.Count > 0)
             {
-                if (components > gridSettings.MinComponents && Random.Range(0f, 1f) < gridSettings.componentStopChance)
-                    return;
-
-                components++;
-                CreateComponent(ref x, ref y, components, gridSettings);
-
-                int tries = 0;
-                while (gridSettings.grid[x, y] != 0)
+                if (++i > 1000)
                 {
-                    int dirX = Random.Range(x > gridSettings.MinX ? -1 : 0, x < gridSettings.MaxX ? 2 : 1);
-                    if (dirX == 0) y += Random.Range(y > gridSettings.MinY ? -1 : 0, y < gridSettings.MaxY ? 2 : 1);
-                    else x += dirX;
+                    Debug.LogError("Loop");
+                    return;
+                }
+                
+                Vector2Int[] dirs =
+                {
+                    new Vector2Int(1, 0),
+                    new Vector2Int(-1, 0),
+                    new Vector2Int(0, 1),
+                    new Vector2Int(0, -1)
+                };
+                dirs.Shuffle();
+                
+                Vector2Int curr = queue.Dequeue();
+                foreach (Vector2Int dir in dirs)
+                {
+                    Vector2Int next = new Vector2Int(curr.x + dir.x, curr.y + dir.y);
+                    GridPoint nextPoint = gridSettings.grid[next.x, next.y];
+                    
+                    if (next.x < gridSettings.MinX || next.x >= gridSettings.MaxX || next.y < gridSettings.MinY || next.y >= gridSettings.MaxY)
+                        continue;
+            
+                    if (nextPoint.value != 0)
+                        continue;
 
-                    tries++;
-                    if (tries > gridSettings.maxFindTries)
-                        return;
+                    if (TryAddGridPoint(gridSettings, curr, next))
+                    {
+                        if (nextPoint.visits < 4)
+                            queue.Enqueue(next);
+                    }
+                    else if (gridSettings.grid[next.x, next.y].value == 0 && TryAddComponent(gridSettings, ref components, next))
+                    {
+                        if (nextPoint.visits < 4)
+                            queue.Enqueue(next);
+                    }
                 }
             }
         }
 
-        private static void CreateComponent(ref int x, ref int y, int i, GridSettings gridSettings)
+        private static bool TryAddGridPoint(GridSettings gridSettings, Vector2Int curr, Vector2Int next)
         {
-            int steps = 0, tries = 0;
-            while (steps < gridSettings.MaxRange)
-            {
-                if (steps > gridSettings.MinRange && Random.Range(0f, 1f) < gridSettings.stepStopChance)
-                    return;
+            GridPoint currPoint = gridSettings.grid[curr.x, curr.y];
+            GridPoint nextPoint = gridSettings.grid[next.x, next.y];
+            nextPoint.visits++;
 
-                if (gridSettings.grid[x, y] == 0)
-                {
-                    gridSettings.grid[x, y] = i;
-                    steps++;
-                }
-                else
-                {
-                    tries++;
-                    if (tries > gridSettings.maxFindTries)
-                        return;
-                }
+            if (currPoint.depth >= gridSettings.maxRange)
+                return false;
 
-                int dirX = Random.Range(x > gridSettings.MinX ? -1 : 0, x < gridSettings.MaxX ? 2 : 1);
-                if (dirX == 0) y += Random.Range(y > gridSettings.MinY ? -1 : 0, y < gridSettings.MaxY ? 2 : 1);
-                else x += dirX;
-            }
+            if (currPoint.depth >= gridSettings.minRange && Random.Range(0f, 1f) < gridSettings.stepStopChance)
+                return false;
+            
+            nextPoint = new GridPoint(currPoint.value, nextPoint.visits + 1, currPoint);
+            gridSettings.grid[next.x, next.y] = nextPoint;
+            return true;
+        }
+
+        private static bool TryAddComponent(GridSettings gridSettings, ref int components, Vector2Int next)
+        {
+            GridPoint nextPoint = gridSettings.grid[next.x, next.y];
+            nextPoint.visits++;
+
+            if (components >= gridSettings.maxComponents)
+                return false;
+            
+            if (components >= gridSettings.minComponents && Random.Range(0f, 1f) < gridSettings.componentStopChance)
+                return true;
+            
+            components++;
+            nextPoint = new GridPoint(components, nextPoint.visits + 1);
+            gridSettings.grid[next.x, next.y] = nextPoint;
+            return true;
         }
     }
 }

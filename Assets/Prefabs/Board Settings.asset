@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2b83cb1701941d6942c15a1b9215ae4, type: 3}
   m_Name: Board Settings
   m_EditorClassIdentifier: 
-  boardWidth: 16
-  boardHeight: 10
+  boardWidth: 32
+  boardHeight: 20
   boardDepth: 0.8
-  horizontalCutAmount: 16
-  verticalCutAmount: 10
+  horizontalCutAmount: 32
+  verticalCutAmount: 20
   wallMaterial: {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
   componentMaterials:
   - {fileID: 2100000, guid: a4c94971d8788c645abf72b601246a37, type: 2}

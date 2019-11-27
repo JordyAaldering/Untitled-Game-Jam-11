@@ -22,7 +22,7 @@ namespace Grid
             for (int x = 0; x < width; x++)
             for (int y = 0; y < height; y++)
             {
-                int i = gridSettings.grid[x, y];
+                int i = gridSettings.grid[x, y].value;
                 grid[x, y] = i;
                 
                 if (!components.ContainsKey(i) || components[i] == null)

@@ -1,6 +1,7 @@
 ﻿#pragma warning disable 0649
 using System;
 using System.Text.RegularExpressions;
+using Board;
 using Cut;
 using Grid;
 using UnityEngine;
@@ -11,6 +12,7 @@ namespace Player
     [RequireComponent(typeof(Camera))]
     public class DragComponent : MonoBehaviour
     {
+        [SerializeField] private BoardSettings boardSettings;
         [SerializeField] private CutSettings cutSettings;
         [SerializeField] private GridCurrent gridCurrent;
         
@@ -90,8 +92,11 @@ namespace Player
 
             if (dir != Vector2Int.zero && gridCurrent.TryMove(int.Parse(Regex.Match(target.name, @"\d+").Value), dir))
             {
-                nextPos.x = cutSettings.horizontalCuts[Mathf.FloorToInt(targetPos.x) + dir.x];
-                nextPos.y = cutSettings.verticalCuts[Mathf.FloorToInt(targetPos.y) + dir.y];
+                int x = Mathf.FloorToInt(targetPos.x) + dir.x;
+                int y = Mathf.FloorToInt(targetPos.y) + dir.y;
+
+                nextPos.x = cutSettings.horizontalCuts.ClampBounds(x, 0f, boardSettings.boardWidth);
+                nextPos.y = cutSettings.verticalCuts.ClampBounds(y, 0f, boardSettings.boardHeight);
                 target.transform.position = nextPos;
                 
                 origin = cam.WorldToScreenPoint(nextPos);

@@ -40,7 +40,7 @@ namespace Board
             wall.Clear();
             gridSettings.Clear(boardSettings);
             gridCurrent.Clear();
-            components = new BoardComponent[gridSettings.MaxComponents];
+            components = new BoardComponent[gridSettings.maxComponents];
         
             int childCount = componentsParent.childCount;
             for (int i = childCount - 1; i >= 0; i--)
@@ -54,7 +54,7 @@ namespace Board
             for (int x = 0; x < boardSettings.horizontalCutAmount + 1; x++)
             for (int y = 0; y < boardSettings.verticalCutAmount + 1; y++)
             {
-                int i = gridSettings.grid[x, y];
+                int i = gridSettings.grid[x, y].value;
             
                 BoardObject obj = wall;
                 if (i > 0)
