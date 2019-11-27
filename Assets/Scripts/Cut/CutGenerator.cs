@@ -6,58 +6,45 @@ namespace Cut
     {
         public static void Cut(BoardSettings boardSettings, CutSettings cutSettings)
         {
-            cutSettings.wallWidth = boardSettings.boardWidth;
-            cutSettings.wallHeight = boardSettings.boardHeight;
-            
             cutSettings.horizontalCuts = new float[boardSettings.horizontalCutAmount];
             cutSettings.verticalCuts = new float[boardSettings.verticalCutAmount];
             
-            CutHorizontal(cutSettings);
-            CutVertical(cutSettings);
+            CutHorizontal(boardSettings, cutSettings);
+            CutVertical(boardSettings, cutSettings);
         }
 
-        private static void CutHorizontal(CutSettings cutSettings)
+        private static void CutHorizontal(BoardSettings boardSettings, CutSettings cutSettings)
         {
             int amount = cutSettings.horizontalCuts.Length;
             if (amount == 0)
                 return;
 
-            SetHorizontalFractions(cutSettings, amount);
+            float[] fractions = GetFractions(amount);
             for (int i = 0; i < amount; i++)
             {
-                cutSettings.horizontalCuts[i] = cutSettings.horizontalCutFractions[i] * cutSettings.wallWidth;
+                cutSettings.horizontalCuts[i] = fractions[i] * boardSettings.boardWidth;
             }
         }
 
-        private static void CutVertical(CutSettings cutSettings)
+        private static void CutVertical(BoardSettings boardSettings, CutSettings cutSettings)
         {
             int amount = cutSettings.verticalCuts.Length;
             if (amount == 0)
                 return;
 
-            SetVerticalFractions(cutSettings, amount);
+            float[] fractions = GetFractions(amount);
             for (int i = 0; i < amount; i++)
             {
-                cutSettings.verticalCuts[i] = cutSettings.verticalCutFractions[i] * cutSettings.wallHeight;
+                cutSettings.verticalCuts[i] = fractions[i] * boardSettings.boardHeight;
             }
         }
 
-        private static void SetHorizontalFractions(CutSettings cutSettings, int amount)
+        private static float[] GetFractions(int amount)
         {
-            cutSettings.horizontalCutFractions = new float[amount];
+            float[] fractions = new float[amount];
             for (int i = 0; i < amount; i++)
-            {
-                cutSettings.horizontalCutFractions[i] = (float) (i + 1) / (amount + 1);
-            }
-        }
-        
-        private static void SetVerticalFractions(CutSettings cutSettings, int amount)
-        {
-            cutSettings.verticalCutFractions = new float[amount];
-            for (int i = 0; i < amount; i++)
-            {
-                cutSettings.verticalCutFractions[i] = (float) (i + 1) / (amount + 1);
-            }
+                fractions[i] = (float) (i + 1) / (amount + 1);
+            return fractions;
         }
     }
 }

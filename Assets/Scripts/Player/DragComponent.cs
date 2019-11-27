@@ -55,7 +55,9 @@ namespace Player
                 
                 foreach (Vector2Int v in component.Value)
                 {
-                    Gizmos.DrawSphere(new Vector3(v.x, v.y), 0.1f);
+                    float x = cutSettings.horizontalCuts.GetClamped(v.x);
+                    float y = cutSettings.verticalCuts.GetClamped(v.y);
+                    Gizmos.DrawSphere(new Vector3(x, y), 0.1f);
                 }
             }
         }
@@ -88,8 +90,8 @@ namespace Player
 
             if (dir != Vector2Int.zero && gridCurrent.TryMove(int.Parse(Regex.Match(target.name, @"\d+").Value), dir))
             {
-                nextPos.x = cutSettings.horizontalCuts[cutSettings.horizontalCuts.GetClosestIndex(nextPos.x) + dir.x];
-                nextPos.y = cutSettings.verticalCuts[cutSettings.verticalCuts.GetClosestIndex(nextPos.y) + dir.y];
+                nextPos.x = cutSettings.horizontalCuts[Mathf.FloorToInt(targetPos.x) + dir.x];
+                nextPos.y = cutSettings.verticalCuts[Mathf.FloorToInt(targetPos.y) + dir.y];
                 target.transform.position = nextPos;
                 
                 origin = cam.WorldToScreenPoint(nextPos);
