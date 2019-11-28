@@ -36,14 +36,25 @@ namespace Game
             }
         }
         
-        private SetGridTexture _tex;
-        private SetGridTexture tex
+        private SetGridTexture _helpTex;
+        private SetGridTexture helpTex
         {
             get
             {
-                if (!_tex)
-                    _tex = FindObjectOfType<SetGridTexture>();
-                return _tex;
+                if (!_helpTex)
+                    _helpTex = FindObjectOfType<SetGridTexture>();
+                return _helpTex;
+            }
+        }
+        
+        private SetQuadTexture _gridTex;
+        private SetQuadTexture gridTex
+        {
+            get
+            {
+                if (!_gridTex)
+                    _gridTex = FindObjectOfType<SetQuadTexture>();
+                return _gridTex;
             }
         }
 
@@ -62,7 +73,10 @@ namespace Game
         public void StartLevel()
         {
             generator.Generate();
-            tex.SetTexture();
+            
+            helpTex.SetTexture();
+            gridTex.SetTexture();
+            
             wall.Initialise(startPos, boardSettings.boardDepth * 0.5f);
             isPlaying = true;
         }
