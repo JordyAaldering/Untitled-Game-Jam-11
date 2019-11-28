@@ -127,12 +127,12 @@ namespace Board
         private void BuildMeshes()
         {
             wall.CreateMesh(boardSettings.wallMaterial);
-            for (int i = 0; i < components.Length; i++)
+            foreach (BoardComponent c in components)
             {
-                if (components[i] != null)
+                if (c != null)
                 {
-                    components[i].CreateObject(componentsParent);
-                    components[i].CreateMesh(boardSettings.GetComponentMaterial(i));
+                    c.CreateObject(componentsParent);
+                    c.CreateMesh(boardSettings.componentMaterial);
                 }
             }
         }

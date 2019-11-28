@@ -9,34 +9,26 @@ namespace Board
 
         private readonly List<Vector3> vertices = new List<Vector3>();
         private readonly List<int> triangles = new List<int>();
-        private readonly List<Vector3> normals = new List<Vector3>();
-        private readonly List<Vector2> uvs = new List<Vector2>();
     
-        public MeshData(string name)
-        {
-            this.name = name;
-        }
-    
+        public MeshData(string name) => this.name = name;
+
         public void Clear()
         {
             vertices.Clear();
             triangles.Clear();
-            normals.Clear();
-            uvs.Clear();
         }
 
         public void AddFace(Vector3 a, Vector3 b, Vector3 c, Vector3 d)
         {
-            int vertexStart = vertices.Count;
+            int i = vertices.Count;
+            AddTriangles(i, i + 1, i + 2, i + 3);
         
             vertices.Add(a);
             vertices.Add(b);
             vertices.Add(c);
             vertices.Add(d);
-        
-            AddTriangles(vertexStart, vertexStart + 1, vertexStart + 2, vertexStart + 3);
         }
-
+        
         private void AddTriangles(int a, int b, int c, int d)
         {
             AddTriangle(b, c, a);
@@ -57,11 +49,9 @@ namespace Board
                 name = name,
                 vertices = vertices.ToArray(),
                 triangles = triangles.ToArray(),
-                uv = uvs.ToArray()
             };
-        
-            if (normals.Count > 0) mesh.normals = normals.ToArray();
-            else mesh.RecalculateNormals();
+            
+            mesh.RecalculateNormals();
             return mesh;
         }
     }

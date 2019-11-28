@@ -33,7 +33,10 @@ namespace Board.Object
         {
             Mesh mesh = meshData.CreateMesh();
             gameObject.AddComponent<MeshFilter>().sharedMesh = mesh;
-            gameObject.AddComponent<MeshRenderer>().material = material;
+            
+            gameObject.AddComponent<MeshRenderer>().sharedMaterial = new Material(material) 
+                { color = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f), 1f) };
+
             gameObject.AddComponent<MeshCollider>().sharedMesh = mesh;
         }
     }

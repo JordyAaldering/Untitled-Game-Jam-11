@@ -106,9 +106,11 @@ namespace Player
 
         private void TryRotate()
         {
-            if (gridCurrent.TryRotate(gridSettings, int.Parse(Regex.Match(target.name, @"\d+").Value)))
+            int i = int.Parse(Regex.Match(target.name, @"\d+").Value);
+            if (gridCurrent.TryRotate(gridSettings, i))
             {
-                target.transform.Rotate(0f, 0f, 90f);
+                Vector3 point = new Vector3(gridCurrent.components[i][0].x, gridCurrent.components[i][0].y, target.transform.position.z);
+                target.transform.RotateAround(point, Vector3.forward, 90f);
             }
         }
     }

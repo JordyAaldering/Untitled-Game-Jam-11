@@ -16,10 +16,8 @@ namespace Board
     
         [Header("Mesh")]
         public Material wallMaterial;
-        public Material[] componentMaterials;
-
-        public Material GetComponentMaterial(int i) => componentMaterials[i % componentMaterials.Length];
-    
+        public Material componentMaterial;
+        
         private void OnValidate()
         {
             boardWidth = Mathf.Max(0.01f, boardWidth);

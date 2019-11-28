@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2b83cb1701941d6942c15a1b9215ae4, type: 3}
+  m_Name: Board Settings
+  m_EditorClassIdentifier: 
+  boardWidth: 32
+  boardHeight: 20
+  boardDepth: 0.8
+  horizontalCutAmount: 32
+  verticalCutAmount: 20
+  wallMaterial: {fileID: 2100000, guid: d405d7e3d69ffd744ba6db25a2a01c74, type: 2}
+  componentMaterial: {fileID: 2100000, guid: 3bfb284d2e15c6e47bc13159bf242299, type: 2}
