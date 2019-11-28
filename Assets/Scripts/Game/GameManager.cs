@@ -1,17 +1,42 @@
 using Board;
+using Grid;
 using UnityEngine;
 
 namespace Game
 {
     public class GameManager : MonoBehaviour
     {
-        private BoardGenerator generator;
-        private MovingWall wall;
-
-        private void Awake()
+        private BoardGenerator _generator;
+        private BoardGenerator generator
         {
-            generator = FindObjectOfType<BoardGenerator>();
-            wall = FindObjectOfType<MovingWall>();
+            get
+            {
+                if (!_generator)
+                    _generator = FindObjectOfType<BoardGenerator>();
+                return _generator;
+            }
+        }
+        
+        private MovingWall _wall;
+        private MovingWall wall
+        {
+            get
+            {
+                if (!_wall)
+                    _wall = FindObjectOfType<MovingWall>();
+                return _wall;
+            }
+        }
+        
+        private SetGridTexture _tex;
+        private SetGridTexture tex
+        {
+            get
+            {
+                if (!_tex)
+                    _tex = FindObjectOfType<SetGridTexture>();
+                return _tex;
+            }
         }
 
         private void Update()
@@ -20,10 +45,11 @@ namespace Game
                 StartLevel();
         }
 
-        private void StartLevel()
+        public void StartLevel()
         {
             generator.Generate();
-            wall.Initialise(10f, -5f);
+            tex.SetTexture();
+            wall.Initialise(10f, -10f);
         }
     }
 }
