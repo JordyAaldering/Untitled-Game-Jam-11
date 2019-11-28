@@ -6,7 +6,7 @@ namespace UI
 {
     public class GameCanvas : MonoBehaviour
     {
-        [SerializeField] private Text endText;
+        public Text endText;
 
         public void SetEndText(bool win)
         {

@@ -32,6 +32,7 @@ namespace Board.Object
         public void CreateMesh(Material material)
         {
             Mesh mesh = meshData.CreateMesh();
+            gameObject.layer = 8;
             gameObject.AddComponent<MeshFilter>().sharedMesh = mesh;
             
             gameObject.AddComponent<MeshRenderer>().sharedMaterial = new Material(material) 

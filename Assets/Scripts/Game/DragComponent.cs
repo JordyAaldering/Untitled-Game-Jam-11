@@ -6,7 +6,7 @@ using Grid;
 using UnityEngine;
 using Utilities;
 
-namespace Player
+namespace Game
 {
     [RequireComponent(typeof(Camera))]
     public class DragComponent : MonoBehaviour

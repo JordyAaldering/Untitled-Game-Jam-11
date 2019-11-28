@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2b83cb1701941d6942c15a1b9215ae4, type: 3}
   m_Name: Board Settings
   m_EditorClassIdentifier: 
+  difficulty: 1
   boardWidth: 32
   boardHeight: 20
   boardDepth: 0.8
@@ -19,3 +20,4 @@ MonoBehaviour:
   verticalCutAmount: 20
   wallMaterial: {fileID: 2100000, guid: d405d7e3d69ffd744ba6db25a2a01c74, type: 2}
   componentMaterial: {fileID: 2100000, guid: 3bfb284d2e15c6e47bc13159bf242299, type: 2}
+  _wallMoveSpeed: 10

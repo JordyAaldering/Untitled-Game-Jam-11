@@ -82,6 +82,8 @@ namespace Game
             {
                 isPlaying = true;
                 menuCanvasObj.SetActive(false);
+                gameCanvas.endText.gameObject.SetActive(false);
+                
                 StartLevel();
             }
             else if (isPlaying && wall.transform.position.z <= boardSettings.boardDepth)
