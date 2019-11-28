@@ -2213,7 +2213,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Untitled Game Jam 11 Submission
+  m_Text: 'Untitled Game Jam 11 Submission
+
+    One Button Jam 2019 Sumbission'
 --- !u!222 &1830851497
 CanvasRenderer:
   m_ObjectHideFlags: 0
