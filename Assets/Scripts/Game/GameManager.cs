@@ -6,6 +6,13 @@ namespace Game
 {
     public class GameManager : MonoBehaviour
     {
+        [SerializeField] private float startPos = 10f;
+        private bool isPlaying = false;
+
+        [SerializeField] private BoardSettings boardSettings;
+        [SerializeField] private GridSettings gridSettings;
+        [SerializeField] private GridCurrent gridCurrent;
+        
         private BoardGenerator _generator;
         private BoardGenerator generator
         {
@@ -41,15 +48,22 @@ namespace Game
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.P))
+            if (Input.GetKeyDown(KeyCode.R))
                 StartLevel();
+            
+            if (isPlaying && wall.transform.position.z <= boardSettings.boardDepth)
+            {
+                Debug.Log(gridCurrent.CheckSolution(gridSettings));
+                isPlaying = false;
+            }
         }
 
         public void StartLevel()
         {
             generator.Generate();
             tex.SetTexture();
-            wall.Initialise(10f, -10f);
+            wall.Initialise(startPos, boardSettings.boardDepth * 0.5f);
+            isPlaying = true;
         }
     }
 }

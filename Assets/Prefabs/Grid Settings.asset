@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   width: 33
   height: 21
-  minRange: 2
-  maxRange: 3
-  stepStopChance: 0.5
-  minComponents: 2
-  maxComponents: 4
-  componentStopChance: 0.2
   deadZoneSize: 5
+  minRange: 1
+  maxRange: 2
+  stepStopChance: 0.5
+  minComponents: 1
+  maxComponents: 3
+  componentStopChance: 0.2

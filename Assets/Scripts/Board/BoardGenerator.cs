@@ -39,7 +39,6 @@ namespace Board
         {
             wall.Clear();
             gridSettings.Clear(boardSettings);
-            gridCurrent.Clear();
             components = new BoardComponent[gridSettings.maxComponents];
         
             int childCount = componentsParent.childCount;

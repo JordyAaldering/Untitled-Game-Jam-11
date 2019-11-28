@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
-using JetBrains.Annotations;
 using UnityEngine;
 using Utilities;
 
@@ -18,11 +16,12 @@ namespace Grid
         
         public void Populate(GridSettings gridSettings)
         {
+            components.Clear();
             width = gridSettings.width;
             height = gridSettings.height;
             grid = new int[width, height];
-
             maxIndex = 1;
+
             for (int x = 0; x < width; x++)
             for (int y = 0; y < height; y++)
             {
@@ -98,11 +97,6 @@ namespace Grid
             return true;
         }
 
-        public void Clear()
-        {
-            components.Clear();
-        }
-
         public void Shuffle(GridSettings gridSettings)
         {
             Vector2Int[] dirs =
@@ -126,6 +120,18 @@ namespace Grid
                     TryRotate(gridSettings, comp, true);
                 }
             }
+        }
+
+        public bool CheckSolution(GridSettings gridSettings)
+        {
+            foreach (var c in components)
+            foreach (var v in c.Value)
+            {
+                if (gridSettings.grid[v.x, v.y].value == 0)
+                    return false;
+            }
+
+            return true;
         }
     }
 }

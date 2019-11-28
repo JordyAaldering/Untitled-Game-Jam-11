@@ -7,24 +7,21 @@ namespace Game
         [SerializeField] private float moveSpeed = 1f;
 
         private float currentMoveSpeed = 0f;
-        private float endZ = 0f;
+        private float endPos = 0f;
 
-        public void Initialise(float startZ, float endZ)
+        public void Initialise(float startPos, float endPos)
         {
-            transform.position = new Vector3(0f, 0f, startZ);
+            transform.position = new Vector3(0f, 0f, startPos);
             currentMoveSpeed = moveSpeed;
-            this.endZ = endZ;
+            this.endPos = endPos;
         }
         
         private void Update()
         {
-            if (transform.position.z <= endZ)
+            if (transform.position.z > endPos)
             {
-                // Check Game State
-                return;
+                transform.Translate(Time.deltaTime * currentMoveSpeed * -transform.forward);
             }
-            
-            transform.Translate(Time.deltaTime * currentMoveSpeed * -transform.forward);
         }
     }
 }
