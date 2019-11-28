@@ -1,10 +1,12 @@
-﻿using UnityEngine;
+﻿#pragma warning disable 0649
+using Board;
+using UnityEngine;
 
 namespace Game
 {
     public class MovingWall : MonoBehaviour
     {
-        [SerializeField] private float moveSpeed = 1f;
+        [SerializeField] private BoardSettings boardSettings;
 
         private float currentMoveSpeed = 0f;
         private float endPos = 0f;
@@ -12,7 +14,7 @@ namespace Game
         public void Initialise(float startPos, float endPos)
         {
             transform.position = new Vector3(0f, 0f, startPos);
-            currentMoveSpeed = moveSpeed;
+            currentMoveSpeed = boardSettings.wallMoveSpeed;
             this.endPos = endPos;
         }
         

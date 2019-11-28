@@ -10,7 +10,7 @@ namespace Grid
     {
         [HideInInspector] public int[,] grid = new int[0, 0];
         [HideInInspector] public Dictionary<int, List<Vector2Int>> components = new Dictionary<int, List<Vector2Int>>();
-        public int maxIndex = 1;
+        [HideInInspector] public int maxIndex = 1;
         
         private int width = 0;
         private int height = 0;
@@ -77,6 +77,10 @@ namespace Grid
                 if (useDeadZone && (r.x < gridSettings.MinX || r.x >= gridSettings.MaxX || r.y < gridSettings.MinY || r.y >= gridSettings.MaxY))
                     return false;
                 else if (r.x < 0 || r.x >= width || r.y < 0 || r.y >= height)
+                    return false;
+                
+                int j = grid[r.x, r.y];
+                if (j != 0 && j != i)
                     return false;
             }
             

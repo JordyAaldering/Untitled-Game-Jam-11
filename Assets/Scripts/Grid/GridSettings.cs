@@ -7,6 +7,7 @@ namespace Grid
     [CreateAssetMenu(menuName = "Game Settings/Grid Settings", fileName = "New Grid Settings")]
     public class GridSettings : ScriptableObject
     {
+        [HideInInspector] public int difficulty = 0;
         [HideInInspector] public int width = 0;
         [HideInInspector] public int height = 0;
         [HideInInspector] public GridPoint[,] grid = new GridPoint[0, 0];
@@ -17,13 +18,17 @@ namespace Grid
         public int MinY => deadZoneSize;
         public int MaxY => height - deadZoneSize - 1;
 
-        public int minRange = 1;
-        public int maxRange = 3;
+        [SerializeField] private int _minRange = 1;
+        [SerializeField] private int _maxRange = 3;
         [Range(0f, 1f)] public float stepStopChance = 0.5f;
+        public int minRange => _minRange + difficulty / 3;
+        public int maxRange => _maxRange + difficulty / 3;
 
-        public int minComponents = 1;
-        public int maxComponents = 3;
+        [SerializeField] private int _minComponents = 1;
+        [SerializeField] private int _maxComponents = 3;
         [Range(0f, 1f)] public float componentStopChance = 0.5f;
+        public int minComponents => _minComponents + difficulty;
+        public int maxComponents => _maxComponents + difficulty;
         
         public void Clear(BoardSettings boardSettings)
         {

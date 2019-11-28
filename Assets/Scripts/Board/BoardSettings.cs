@@ -5,6 +5,8 @@ namespace Board
     [CreateAssetMenu(menuName = "Game Settings/Board Settings", fileName = "New Board Settings")]
     public class BoardSettings : ScriptableObject
     {
+        [HideInInspector] public int difficulty = 0;
+        
         [Header("Transform")]
         public float boardWidth = 16f;
         public float boardHeight = 10f;
@@ -17,6 +19,9 @@ namespace Board
         [Header("Mesh")]
         public Material wallMaterial;
         public Material componentMaterial;
+
+        [SerializeField] private float _wallMoveSpeed = 1f;
+        public float wallMoveSpeed => _wallMoveSpeed + _wallMoveSpeed * difficulty * 0.5f;
         
         private void OnValidate()
         {
