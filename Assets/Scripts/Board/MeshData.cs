@@ -6,11 +6,11 @@ namespace Board
     public class MeshData
     {
         private readonly string name;
-    
-        public readonly List<Vector3> vertices = new List<Vector3>();
-        public readonly List<int> triangles = new List<int>();
-        public readonly List<Vector3> normals = new List<Vector3>();
-        public readonly List<Vector2> uvs = new List<Vector2>();
+
+        private readonly List<Vector3> vertices = new List<Vector3>();
+        private readonly List<int> triangles = new List<int>();
+        private readonly List<Vector3> normals = new List<Vector3>();
+        private readonly List<Vector2> uvs = new List<Vector2>();
     
         public MeshData(string name)
         {
@@ -36,14 +36,14 @@ namespace Board
         
             AddTriangles(vertexStart, vertexStart + 1, vertexStart + 2, vertexStart + 3);
         }
-    
-        public void AddTriangles(int a, int b, int c, int d)
+
+        private void AddTriangles(int a, int b, int c, int d)
         {
             AddTriangle(b, c, a);
             AddTriangle(b, d, c);
         }
 
-        public void AddTriangle(int a, int b, int c)
+        private void AddTriangle(int a, int b, int c)
         {
             triangles.Add(a);
             triangles.Add(b);
@@ -62,7 +62,6 @@ namespace Board
         
             if (normals.Count > 0) mesh.normals = normals.ToArray();
             else mesh.RecalculateNormals();
-        
             return mesh;
         }
     }

@@ -29,14 +29,12 @@ namespace Board.Object
             meshData.AddFace(a - offset, b - offset, c - offset, d - offset);
         }
 
-        public void CreateMesh(Material material, bool useCollider)
+        public void CreateMesh(Material material)
         {
             Mesh mesh = meshData.CreateMesh();
             gameObject.AddComponent<MeshFilter>().sharedMesh = mesh;
             gameObject.AddComponent<MeshRenderer>().material = material;
-        
-            if (useCollider)
-                gameObject.AddComponent<MeshCollider>().sharedMesh = mesh;
+            gameObject.AddComponent<MeshCollider>().sharedMesh = mesh;
         }
     }
 }

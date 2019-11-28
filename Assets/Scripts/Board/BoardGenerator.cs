@@ -39,8 +39,7 @@ namespace Board
         {
             wall.Clear();
             gridSettings.Clear(boardSettings);
-            components = new BoardComponent[gridSettings.maxComponents];
-        
+
             int childCount = componentsParent.childCount;
             for (int i = childCount - 1; i >= 0; i--)
             {
@@ -60,15 +59,17 @@ namespace Board
             gridCurrent.Populate(gridSettings);
             gridCurrent.Shuffle(gridSettings);
             
-            for (int x = 0; x <= boardSettings.horizontalCutAmount; x++)
-            for (int y = 0; y <= boardSettings.verticalCutAmount; y++)
+            components = new BoardComponent[gridCurrent.components.Count];
+            foreach (var c in gridCurrent.components)
             {
-                int i = gridCurrent.grid[x, y];
-                if (i > 0 && i <= gridCurrent.maxIndex)
+                int i = c.Key;
+                if (i == 0)
+                    continue;
+                
+                components[i - 1] = new BoardComponent("Component " + i, GetVertexPosition(c.Value[0].x, c.Value[0].y, 0f));
+                foreach (var v in c.Value)
                 {
-                    if (components[i - 1] == null)
-                        components[i - 1] = new BoardComponent("Component " + i, GetVertexPosition(x, y, 0f));
-                    AddCube(components[i - 1], x, y, 0f);
+                    AddCube(components[i - 1], v.x, v.y, 0f);
                 }
             }
         }
@@ -125,15 +126,14 @@ namespace Board
     
         private void BuildMeshes()
         {
-            wall.CreateMesh(boardSettings.wallMaterial, false);
-        
+            wall.CreateMesh(boardSettings.wallMaterial);
             for (int i = 0; i < components.Length; i++)
             {
-                if (components[i] == null)
-                    break;
-            
-                components[i].CreateObject(componentsParent);
-                components[i].CreateMesh(boardSettings.GetComponentMaterial(i), true);
+                if (components[i] != null)
+                {
+                    components[i].CreateObject(componentsParent);
+                    components[i].CreateMesh(boardSettings.GetComponentMaterial(i));
+                }
             }
         }
     }

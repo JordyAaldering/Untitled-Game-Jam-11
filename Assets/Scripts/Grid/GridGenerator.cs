@@ -19,15 +19,8 @@ namespace Grid
             queue.Enqueue(new Vector2Int(startX, startY));
             gridSettings.grid[startX, startY] = new GridPoint(1) {depth = gridSettings.maxRange / 2};
 
-            int i = 0;
             while (queue.Count > 0)
             {
-                if (++i > 1000)
-                {
-                    Debug.LogError("Loop");
-                    return;
-                }
-                
                 Vector2Int[] dirs =
                 {
                     new Vector2Int(1, 0),

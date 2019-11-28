@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Utilities;
 
@@ -71,9 +72,8 @@ namespace Grid
 
         public bool TryRotate(GridSettings gridSettings, int i, bool useDeadZone = false)
         {
-            foreach (Vector2Int v in components[i])
+            foreach (var r in components[i].Select(v => v.Rotate90Around(components[i][0])))
             {
-                Vector2Int r = v.Rotate90Around(components[i][0]);
                 if (useDeadZone && (r.x < gridSettings.MinX || r.x >= gridSettings.MaxX || r.y < gridSettings.MinY || r.y >= gridSettings.MaxY))
                     return false;
                 else if (r.x < 0 || r.x >= width || r.y < 0 || r.y >= height)
@@ -86,9 +86,8 @@ namespace Grid
             }
             
             List<Vector2Int> next = new List<Vector2Int>();
-            foreach (Vector2Int v in components[i])
+            foreach (var r in components[i].Select(v => v.Rotate90Around(components[i][0])))
             {
-                Vector2Int r = v.Rotate90Around(components[i][0]);
                 grid[r.x, r.y] = i;
                 next.Add(r);
             }
@@ -124,14 +123,7 @@ namespace Grid
 
         public bool CheckSolution(GridSettings gridSettings)
         {
-            foreach (var c in components)
-            foreach (var v in c.Value)
-            {
-                if (gridSettings.grid[v.x, v.y].value == 0)
-                    return false;
-            }
-
-            return true;
+            return components.Where(c => c.Key != 0).All(c => c.Value.All(v => gridSettings.grid[v.x, v.y].value != 0));
         }
     }
 }

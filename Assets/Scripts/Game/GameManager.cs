@@ -1,3 +1,4 @@
+#pragma warning disable 0649
 using Board;
 using Grid;
 using UnityEngine;

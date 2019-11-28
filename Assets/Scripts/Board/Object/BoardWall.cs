@@ -26,7 +26,7 @@ namespace Board.Object
             meshData.AddFace(a, b, c, d);
         }
 
-        public void CreateMesh(Material material, bool useCollider)
+        public void CreateMesh(Material material)
         {
             Mesh mesh = meshData.CreateMesh();
             meshFilter.sharedMesh = mesh;

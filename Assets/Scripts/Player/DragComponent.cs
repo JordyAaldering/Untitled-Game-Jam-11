@@ -1,5 +1,4 @@
 ﻿#pragma warning disable 0649
-using System;
 using System.Text.RegularExpressions;
 using Board;
 using Cut;
