@@ -1,6 +1,7 @@
 #pragma warning disable 0649
 using Board;
 using Grid;
+using UI;
 using UnityEngine;
 
 namespace Game
@@ -10,9 +11,24 @@ namespace Game
         [SerializeField] private float startPos = 10f;
         private bool isPlaying = false;
 
+        [Header("Settings")]
         [SerializeField] private BoardSettings boardSettings;
         [SerializeField] private GridSettings gridSettings;
         [SerializeField] private GridCurrent gridCurrent;
+
+        [Header("References")]
+        [SerializeField] private GameObject menuCanvasObj;
+        [SerializeField] private GameObject gameCanvasObj;
+        private GameCanvas _gameCanvas;
+        private GameCanvas gameCanvas
+        {
+            get
+            {
+                if (!_gameCanvas)
+                    _gameCanvas = gameCanvasObj.GetComponent<GameCanvas>();
+                return _gameCanvas;
+            }
+        }
         
         private BoardGenerator _generator;
         private BoardGenerator generator
@@ -36,49 +52,52 @@ namespace Game
             }
         }
         
-        private SetGridTexture _helpTex;
-        private SetGridTexture helpTex
-        {
-            get
-            {
-                if (!_helpTex)
-                    _helpTex = FindObjectOfType<SetGridTexture>();
-                return _helpTex;
-            }
-        }
-        
-        private SetQuadTexture _gridTex;
-        private SetQuadTexture gridTex
+        private SetGridTexture _gridTex;
+        private SetGridTexture gridTex
         {
             get
             {
                 if (!_gridTex)
-                    _gridTex = FindObjectOfType<SetQuadTexture>();
+                    _gridTex = FindObjectOfType<SetGridTexture>();
                 return _gridTex;
+            }
+        }
+        
+        private SetQuadTexture _quadTex;
+        private SetQuadTexture quadTex
+        {
+            get
+            {
+                if (!_quadTex)
+                    _quadTex = FindObjectOfType<SetQuadTexture>();
+                return _quadTex;
             }
         }
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.R))
-                StartLevel();
+            Time.timeScale = isPlaying && Input.GetKey(KeyCode.W) ? 10f : 1f;
             
-            if (isPlaying && wall.transform.position.z <= boardSettings.boardDepth)
+            if (Input.GetKeyDown(KeyCode.R))
             {
-                Debug.Log(gridCurrent.CheckSolution(gridSettings));
+                isPlaying = true;
+                menuCanvasObj.SetActive(false);
+                StartLevel();
+            }
+            else if (isPlaying && wall.transform.position.z <= boardSettings.boardDepth)
+            {
                 isPlaying = false;
+                menuCanvasObj.SetActive(true);
+                gameCanvas.SetEndText(gridCurrent.CheckSolution(gridSettings));
             }
         }
 
         public void StartLevel()
         {
             generator.Generate();
-            
-            helpTex.SetTexture();
             gridTex.SetTexture();
-            
+            quadTex.SetTexture();
             wall.Initialise(startPos, boardSettings.boardDepth * 0.5f);
-            isPlaying = true;
         }
     }
 }
