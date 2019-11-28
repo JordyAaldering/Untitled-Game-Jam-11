@@ -80,10 +80,6 @@ namespace Game
             
             if (Input.GetKeyDown(KeyCode.R))
             {
-                isPlaying = true;
-                menuCanvasObj.SetActive(false);
-                gameCanvas.endText.gameObject.SetActive(false);
-                
                 StartLevel();
             }
             else if (isPlaying && wall.transform.position.z <= boardSettings.boardDepth)
@@ -96,6 +92,10 @@ namespace Game
 
         public void StartLevel()
         {
+            isPlaying = true;
+            menuCanvasObj.SetActive(false);
+            gameCanvas.endText.gameObject.SetActive(false);
+            
             generator.Generate();
             gridTex.SetTexture();
             quadTex.SetTexture();
