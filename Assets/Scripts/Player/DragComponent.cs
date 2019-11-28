@@ -14,6 +14,7 @@ namespace Player
     {
         [SerializeField] private BoardSettings boardSettings;
         [SerializeField] private CutSettings cutSettings;
+        [SerializeField] private GridSettings gridSettings;
         [SerializeField] private GridCurrent gridCurrent;
         
         private bool isDragging;
@@ -90,7 +91,7 @@ namespace Player
                 Mathf.RoundToInt(Mathf.Clamp(nextPos.y - targetPos.y, -1f, 1f))
             );
 
-            if (dir != Vector2Int.zero && gridCurrent.TryMove(int.Parse(Regex.Match(target.name, @"\d+").Value), dir))
+            if (dir != Vector2Int.zero && gridCurrent.TryMove(gridSettings, int.Parse(Regex.Match(target.name, @"\d+").Value), dir))
             {
                 int x = Mathf.FloorToInt(targetPos.x) + dir.x;
                 int y = Mathf.FloorToInt(targetPos.y) + dir.y;
@@ -106,7 +107,7 @@ namespace Player
 
         private void TryRotate()
         {
-            if (gridCurrent.TryRotate(int.Parse(Regex.Match(target.name, @"\d+").Value)))
+            if (gridCurrent.TryRotate(gridSettings, int.Parse(Regex.Match(target.name, @"\d+").Value)))
             {
                 target.transform.Rotate(0f, 0f, 90f);
             }

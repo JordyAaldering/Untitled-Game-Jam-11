@@ -51,23 +51,27 @@ namespace Board
     
         private void CreateMeshes()
         {
-            for (int x = 0; x < boardSettings.horizontalCutAmount + 1; x++)
-            for (int y = 0; y < boardSettings.verticalCutAmount + 1; y++)
+            for (int x = 0; x <= boardSettings.horizontalCutAmount; x++)
+            for (int y = 0; y <= boardSettings.verticalCutAmount; y++)
             {
-                int i = gridSettings.grid[x, y].value;
-            
-                BoardObject obj = wall;
-                if (i > 0)
-                {
-                    if (components[i - 1] == null)
-                        components[i - 1] = new BoardComponent("Component " + i, GetVertexPosition(x, y, 0f));
-                    obj = components[i - 1];
-                }
-            
-                AddCube(obj, x, y, 0f);
+                if (gridSettings.grid[x, y].value == 0)
+                    AddCube(wall, x, y, 0f);
             }
             
             gridCurrent.Populate(gridSettings);
+            gridCurrent.Shuffle(gridSettings);
+            
+            for (int x = 0; x <= boardSettings.horizontalCutAmount; x++)
+            for (int y = 0; y <= boardSettings.verticalCutAmount; y++)
+            {
+                int i = gridCurrent.grid[x, y];
+                if (i > 0 && i <= gridCurrent.maxIndex)
+                {
+                    if (components[i - 1] == null)
+                        components[i - 1] = new BoardComponent("Component " + i, GetVertexPosition(x, y, 0f));
+                    AddCube(components[i - 1], x, y, 0f);
+                }
+            }
         }
     
         private void AddCube(BoardObject obj, int x, int y, float z)
